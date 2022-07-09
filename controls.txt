@@ -1,0 +1,6 @@
+Look around : /
+Drop item : d
+Open inventory : i
+Pickup item : g
+Log history : v
+Wait : .
