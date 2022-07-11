@@ -9,7 +9,7 @@ import exceptions
 import input_handlers
 import setup_game
 
-def save_game(haldner: input_handlers.BaseEventHandler, filename: str) -> None:
+def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
     """If the current event handler has an active Engine then save it."""
     if isinstance(handler, input_handlers.EventHandler):
         handler.engine.save_as(filename)
@@ -44,7 +44,6 @@ def main() -> None:
                         context.convert_event(event)
                         handler = handler.handle_events(event) or handler
                 except Exception:  # Handle exceptions in game.
-                    pdb.set_trace()
                     traceback.print_exc()  # Print error to stderr.
                     # Then print the error to the message log.
                     if isinstance(handler, input_handlers.EventHandler):

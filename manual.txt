@@ -1,3 +1,10 @@
 characters
 - greyhound bus (BOSS)
 - crackers
+
+Each floor is a area of the story?
+- french quarter
+- bowling alley
+- ignatious house
+- levy factory
+- bar
