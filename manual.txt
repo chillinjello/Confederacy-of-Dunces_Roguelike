@@ -8,3 +8,10 @@ Each floor is a area of the story?
 - ignatious house
 - levy factory
 - bar
+
+Armor ideas:
+    - Earing
+    - Cape
+
+Weapon ideas:
+    - plastic cutlas
