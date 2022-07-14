@@ -9,9 +9,41 @@ Each floor is a area of the story?
 - levy factory
 - bar
 
-Armor ideas:
-    - Earing
-    - Cape
 
+
+Consumables:
+    - Jelly Donut
+        - Add 20 Health
+    - Dr. Nut
+        - Increases attack and lowers defense for 20 turns
+    - Cross
+        - Drop a cross object that attracts
+    - The Consolation of Philosophy
+        - Convert an enemy 
+    - Bowling Ball
+        - Throw the blowing ball and deal 40 damage to every enemy in the path
+    
+    
 Weapon ideas:
-    - plastic cutlas
+    - Plastic Cutlas
+        - 15 damage + bleed
+    - Big Chief Tablet
+        - 10 damage + -5 defense per Hunting
+    - 
+    - Chains
+        - 20 damage.
+        - 5 uses. Each hit freezes enemy
+
+Equipables:
+    - Hat:
+        - Earing
+        - Hunting Cap
+        -  
+
+    - Clothes:
+        - Santa outfit
+
+    - Misc.:
+        - Box of Porno
+        - Yellow Cockatoos
+        - 
