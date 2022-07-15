@@ -1,49 +1,114 @@
-characters
-- greyhound bus (BOSS)
-- crackers
 
-Each floor is a area of the story?
-- french quarter
-- bowling alley
-- ignatious house
-- levy factory
-- bar
+Maybe some mechanic where you have to manage your valve:
+    Valve Status: Fully closed, Partially closed, halfway open, nearly open, 100% clear
 
+The second room placed should be the boss room to insure that the room is placed at all.
+
+Areas:
+- French Quarter
+    - Bosses:
+        - George
+        - Dorian Green
+    - Enemies:
+        - Sailors
+        - Fop
+        - Lady Painter
+- Ignatious' House
+    - Bosses:
+        - Neighbor
+- Levy Factory
+    - Boss
+        - Gonzoloz
+        - 
+- Bar
+    - Boss
+        - Lana Lee
+        - Cockatoo
+    - Enemies
+        - Vagabonds
+        - Sailors
+        - Bartender
+    - Visuals
+        - Dark rooms
+        - Place Dirt and Tables around
+- University
+    - Boss
+        - Bus
+        - Professor (Dr. Talc)
+            - Spread rumors that he's a papist
+            - History of the British monarchy
+    - Enemies
+        - Students
+        - Rednecks
+        - Crackers
+
+Other characters:
+    - Claud Robichaux
+    - Burma Jones
+    - Patrolman Mancuso
+    - Darline
+    - Mrs. Irine Riley
+    - Santa Battaglia
+    - Three Girls
+    - Office manager
+    - Myrna Minkoff
 
 
 Consumables:
-    - Jelly Donut
+    - Jelly Donut:
         - Add 20 Health
-    - Dr. Nut
+    - Dr. Nut:
         - Increases attack and lowers defense for 20 turns
-    - Cross
+    - Cross:
         - Drop a cross object that attracts
-    - The Consolation of Philosophy
+    - The Consolation of Philosophy:
         - Convert an enemy 
-    - Bowling Ball
+    - Bowling Ball:
         - Throw the blowing ball and deal 40 damage to every enemy in the path
-    
+    - Hot Dogs:
+        - Increase max health 2
+    - Communiss Pamflet:
+    - Ticket to the movies:
+    - Miss Trixie's Sandwhich:
+    - Jazz Record:
+    - Sheet with "Crusade for Moorish Dignity" written on it:
+    - Oven Wine:
+    - Dirty Cat:
+
     
 Weapon ideas:
-    - Plastic Cutlas
+    - Plastic Cutlas:
         - 15 damage + bleed
-    - Big Chief Tablet
+    - Big Chief Tablet:
         - 10 damage + -5 defense per Hunting
-    - 
-    - Chains
+    - Lute:
+        - 15 damage + splash damage
+    - Chains:
         - 20 damage.
         - 5 uses. Each hit freezes enemy
+    - Brick:
+        - 25 damage.
+    - Broom:
 
 Equipables:
-    - Hat:
+    - Head:
         - Earing
         - Hunting Cap
-        -  
+        - Black Sunglasses 
 
-    - Clothes:
+    - Body:
         - Santa outfit
+        - Trench coat and scarf
+        - Police Uniform
 
     - Misc.:
         - Box of Porno
-        - Yellow Cockatoos
-        - 
+        - Yellow Cockatoo
+        - Letter from the minx
+        - A picture of Rex
+        - Police Motorcycle
+        - Letter to Mr. Abelman
+        - Massage Board
+        - Hot dog cart
+        - "12in of pleasure" Sign
+        - Picture of Santa's mom
