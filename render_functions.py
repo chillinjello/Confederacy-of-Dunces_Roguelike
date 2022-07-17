@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from engine import Engine
     from game_map import GameMap
     
-def render_bar(
+def render_health_bar(
     console: Console, current_value: int, maximum_value: int, total_width: int
 ) -> None:
     bar_width = int(float(current_value) / maximum_value * total_width)
@@ -23,6 +23,35 @@ def render_bar(
     
     console.print(
         x=1, y=45, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
+    )
+
+def render_valve_bar(
+    console: Console, valve_level: int, total_width: int
+):
+    valve_string = ""
+    valve_background_color = color.bar_empty
+
+    if (valve_level == 0):
+        valve_string = "Fully Closed"
+        valve_background_color = color.valve_bar_0
+    elif (valve_level == 1):
+        valve_string = "Partially Closed"
+        valve_background_color = color.valve_bar_1
+    elif (valve_level == 2):
+        valve_string = "Halfway Open"
+        valve_background_color = color.valve_bar_2
+    elif (valve_level == 3):
+        valve_string = "Nearly Open"
+        valve_background_color = color.valve_bar_3
+    else:
+        valve_string = "100% Clear"
+        valve_background_color = color.valve_bar_4
+
+
+    console.draw_rect(x=0, y=46, width=total_width, height=1, ch=1, bg=valve_background_color)
+
+    console.print(
+        x=1, y=46, string=f"Valve: {valve_string}", fg=color.bar_text
     )
 
 def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:

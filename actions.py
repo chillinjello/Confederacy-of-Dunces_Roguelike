@@ -4,6 +4,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
 import exceptions
+import random
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -138,15 +139,24 @@ class MeleeAction(ActionWithDirection):
 
         damage = self.entity.fighter.power - target.fighter.defense
 
-        attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
         if self.entity is self.engine.player:
             attack_color = color.player_atk
         else:
             attack_color = color.enemy_atk
 
+        # Check miss
+        rnd = random.uniform(0,1)
+        if rnd < self.entity.fighter.miss_chance:
+            self.engine.message_log.add_message(
+                f"{self.entity.name.capitalize()} tried to attack {target.name}, but missed.",
+                attack_color
+            )
+            return
+
+        attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
         if damage > 0:
             self.engine.message_log.add_message(f"{attack_desc} for {damage} hit points.", attack_color)
-            target.fighter.hp -= damage
+            target.fighter.take_damage(damage)
         else:
             self.engine.message_log.add_message(f"{attack_desc} but does not damage.", attack_color)
 

@@ -106,6 +106,7 @@ class GameWorld:
         max_rooms: int,
         room_min_size: int,
         room_max_size: int,
+        ordered_settings: Iterator,
         current_floor: int = 0,
     ):
         self.engine = engine
@@ -118,6 +119,8 @@ class GameWorld:
         self.room_min_size = room_min_size
         self.room_max_size = room_max_size
 
+        self.ordered_settings = ordered_settings
+
         self.current_floor = current_floor
 
     def generate_floor(self) -> None:
@@ -125,7 +128,9 @@ class GameWorld:
 
         self.current_floor += 1
 
+        current_settings = self.ordered_settings[(self.current_floor - 1) % len(self.ordered_settings)]
         self.engine.game_map = generate_dungeon(
+            floor_settings=current_settings,
             max_rooms=self.max_rooms,
             room_min_size=self.room_min_size,
             room_max_size=self.room_max_size,

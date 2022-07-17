@@ -13,14 +13,14 @@ Areas:
         - Sailors
         - Fop
         - Lady Painter
-- Ignatious' House
+- Ignatius' House
     - Bosses:
         - Neighbor
 - Levy Factory
     - Boss
         - Gonzoloz
         - 
-- Bar
+- Night of Joy Bar
     - Boss
         - Lana Lee
         - Cockatoo

@@ -25,20 +25,6 @@ max_monsters_by_floor = [
     (6, 5),
 ]
 
-item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.health_potion, 35)],
-    2: [(entity_factories.confusion_scroll, 10)],
-    4: [(entity_factories.lightning_scroll, 25), (entity_factories.sword, 5)],
-    6: [(entity_factories.fireball_scroll, 25), (entity_factories.chain_mail, 15)],
-}
-
-enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.orc, 80)],
-    3: [(entity_factories.troll, 15)],
-    5: [(entity_factories.troll, 30)],
-    7: [(entity_factories.troll, 60)],
-}
-
 def get_max_value_for_floor(
     max_value_by_floor: List[Tuple[int, int]], floor: int
 ) -> int:
@@ -107,7 +93,11 @@ class RectangularRoom:
         )
 
 def place_entities(
-    room: RectangularRoom, dungeon: GameMap, floor_number: int,
+    room: RectangularRoom, 
+    dungeon: GameMap, 
+    floor_number: int,
+    enemy_chances,
+    item_chances,
 ) -> None:
     number_of_monsters = random.randint(
         0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
@@ -151,6 +141,7 @@ def tunnel_between(
         yield x, y 
 
 def generate_dungeon(
+    floor_settings: Dict[str, Dict],
     max_rooms: int,
     room_min_size: int,
     room_max_size: int,
@@ -162,6 +153,10 @@ def generate_dungeon(
     """Generate a new dungeon map."""
     player = engine.player
     dungeon = GameMap(engine, map_width, map_height, entities=[player])
+
+    engine.message_log.add_message(f"You've entered { floor_settings['floor_name'] }")
+    enemy_chances = floor_settings["enemy_chances"]
+    item_chances = floor_settings["item_chances"]
 
     rooms: List[RectangularRoom] = []
 
@@ -195,7 +190,7 @@ def generate_dungeon(
 
             center_of_last_room = new_room.center
 
-        place_entities(new_room, dungeon, floor_number)
+        place_entities(new_room, dungeon, floor_number, enemy_chances, item_chances)
 
         dungeon.tiles[center_of_last_room] = tile_types.down_stairs
         dungeon.downstairs_location = center_of_last_room

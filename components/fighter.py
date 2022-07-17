@@ -1,22 +1,36 @@
 from __future__ import annotations
+import pdb
 
 from typing import TYPE_CHECKING
+from xmlrpc.client import boolean
 
 import color
 from components.base_component import BaseComponent
+from game_map import GameMap
 from render_order import RenderOrder
 
 if TYPE_CHECKING:
     from entity import Actor
 
+
 class Fighter(BaseComponent):
     parent: Actor
 
-    def __init__(self, hp: int, base_defense: int, base_power: int):
+    def __init__(self, 
+        hp: int, 
+        base_defense: int, 
+        base_power: int, 
+        base_valve: int = 100,
+        *,
+        is_player: bool = False
+    ):
         self.max_hp = hp
         self._hp = hp
         self.base_defense = base_defense
         self.base_power = base_power
+        self._valve = base_valve
+        self.max_valve = base_valve
+        self.is_player = is_player
 
     @property
     def hp(self) -> int:
@@ -27,6 +41,47 @@ class Fighter(BaseComponent):
         self._hp = max(0, min(value, self.max_hp))
         if self._hp == 0 and self.parent.ai:
             self.die()
+
+    @property
+    def valve(self) -> int:
+        return self._valve
+
+    @valve.setter
+    def valve(self, value:int) -> None:
+        starting_valve_level = self.valve_level
+        self._valve = max(0, min(value, self.max_valve))
+        end_valve_level = self.valve_level
+        if starting_valve_level != end_valve_level:
+            self.parent.parent.engine.message_log.add_message(
+                f"Your valve feels {self.get_valve_level_string(end_valve_level)}."
+            )
+
+    @property
+    def valve_level(self) -> int:
+        # Returns 0-4 indicating Fully Closed to 100% Clear
+        current_ratio = self._valve / self.max_valve
+        if (current_ratio > 0.8):
+            return 4 # 100% Clear
+        elif (current_ratio > 0.6):
+            return 3 # Almost Fully Open
+        elif (current_ratio > 0.4):
+            return 2 # Halfway Open
+        elif (current_ratio > 0.2):
+            return 1 # Partially Closed
+        else:
+            return 0 # Fully Closed
+
+    def get_valve_level_string(self, level: int) -> str:
+        if (level == 0):
+            return "Fully Closed"
+        elif (level == 1):
+            return "Partially Closed"
+        elif (level == 2):
+            return "Halfway Open"
+        elif (level == 3):
+            return "Nearly Open"
+        elif (level == 4):
+            return "100% Clear"
 
     @property
     def defense(self) -> int:
@@ -49,6 +104,24 @@ class Fighter(BaseComponent):
             return self.parent.equipment.power_bonus
         else:
             return 0
+
+    @property
+    def valve_miss_chance(self) -> int:
+        valve_level = self.valve_level
+        if valve_level == 0:
+            return 0.6
+        elif valve_level == 1:
+            return 0.3
+        elif valve_level == 2:
+            return 0.15
+        elif valve_level == 3:
+            return 0.05
+        else:
+            return 0
+
+    @property
+    def miss_chance(self) -> int:
+        return self.valve_miss_chance
 
     def die(self) -> None:
         if self.engine.player is self.parent:
@@ -87,4 +160,6 @@ class Fighter(BaseComponent):
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
 
-    
+        if self.is_player:
+            factor = 1 - 2 * abs(amount)/100
+            self.valve = int(self.valve * factor)

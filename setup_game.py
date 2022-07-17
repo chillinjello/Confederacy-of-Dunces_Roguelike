@@ -1,11 +1,14 @@
 """Handle the loading and initialization of game sessions."""
 from __future__ import annotations
 
+from typing import Dict
+
 import lzma
 import pickle
 import traceback
 import copy
 from typing import Optional
+import numpy as np
 
 import tcod
 
@@ -15,10 +18,22 @@ import entity_factories
 import input_handlers
 from game_map import GameWorld
 from procgen import generate_dungeon
-
+from floors.floor_settings import floor_settings, floor_name_constants
 
 # Load the background image and remove the alpha channel.
 background_image = tcod.image.load("menu_background.png")[:, :, :3]
+
+def get_new_floor_order():
+    floor_order = floor_name_constants.copy()
+    np.random.shuffle(floor_order)
+    return floor_order
+
+def get_floor_settings():
+    ordered_floor_settings = []
+    floor_order = get_new_floor_order()
+    for floor in floor_order:
+        ordered_floor_settings.append(floor_settings.get(floor))
+    return ordered_floor_settings
 
 
 def new_game() -> Engine:
@@ -41,6 +56,7 @@ def new_game() -> Engine:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
+        ordered_settings=get_floor_settings(),
     )
 
     engine.game_world.generate_floor()
