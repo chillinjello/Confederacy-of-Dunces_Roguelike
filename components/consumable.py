@@ -149,3 +149,43 @@ class FireballDamageConsumable(Consumable):
         if not targets_hit:
             raise Impossible("There are no targets in the radius.")
         self.consume()
+
+
+#
+# Untargeted Consumables
+#
+
+class JellyDonut(Consumable):
+    def __init__(self, amount: int):
+        self.amount = amount
+
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        amount_recovered = consumer.fighter.heal(self.amount)
+
+        if amount_recovered > 0:
+            self.engine.message_log.add_message(
+                f"You consume the {self.parent.name}, and recover {amount_recovered} HP!",
+                color.health_recovered
+            )
+            self.consume()
+        else:
+            raise Impossible(f"Your health is already full.")
+
+class DrNut(Consumable):
+    def __init__(self, number_of_turns: int):
+        self.number_of_turns = number_of_turns
+
+    def activate(self, action: actions.ItemAction) -> None:
+        pass
+
+#
+# Targeted Consumables
+#
+
+class Cross(Consumable):
+    def __init__(self, health: int = 50):
+        self.health = health
+
+    def activate(self, action: actions.ItemAction) -> None:
+        pass

@@ -1,5 +1,6 @@
 from components.ai import HostileEnemy
 from components import consumable, equippable
+from components.buff_container import BuffContainer
 from components.equipment import Equipment
 from components.fighter import Fighter
 from components.inventory import Inventory
@@ -14,6 +15,7 @@ player = Actor(
     equipment=Equipment(),
     fighter=Fighter(hp=30, base_defense=2, base_power=5, base_valve=100, is_player=True),
     inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
     level=Level(level_up_base=200),
 )
 
@@ -25,6 +27,7 @@ orc = Actor(
     equipment=Equipment(),
     fighter=Fighter(hp=10, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
     level=Level(xp_given=35),
 )
 troll = Actor(
@@ -35,6 +38,7 @@ troll = Actor(
     equipment=Equipment(),
     fighter=Fighter(hp=16, base_defense=1, base_power=6),
     inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
     level=Level(xp_given=100)
 )
 

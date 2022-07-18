@@ -17,26 +17,50 @@ class Equipment(BaseComponent):
         self.armor = armor
 
     @property
-    def defense_bonus(self) -> int:
-        bonus = 0
+    def defense_multiplier(self):
+        bonus = 1
 
         if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.defense_bonus
+            bonus *= self.weapon.equippable.defense_multiplier
 
         if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.defense_bonus
+            bonus *= self.armor.equippable.defense_multiplier
         
         return bonus
 
     @property
-    def power_bonus(self) -> int:
+    def defense_addition(self) -> int:
         bonus = 0
 
         if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.power_bonus
+            bonus += self.weapon.equippable.defense_addition
 
         if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.power_bonus
+            bonus += self.armor.equippable.defense_addition
+        
+        return bonus
+
+    @property
+    def power_multiplier(self):
+        bonus = 1
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus *= self.weapon.equippable.power_multiplier
+
+        if self.armor is not None and self.armor.equippable is not None:
+            bonus *= self.armor.equippable.power_multiplier
+        
+        return bonus
+    
+    @property
+    def power_addition(self):
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.power_addition
+
+        if self.armor is not None and self.armor.equippable is not None:
+            bonus += self.armor.equippable.power_addition
         
         return bonus
 

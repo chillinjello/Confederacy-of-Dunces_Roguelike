@@ -14,13 +14,18 @@ class Equippable(BaseComponent):
     def __init__(
         self,
         equipment_type: EquipmentType,
-        power_bonus: int = 0,
-        defense_bonus: int = 0,
+        power_multiplier: int = 1,
+        power_addition: int = 0,
+        defense_multiplier: int = 1,
+        defense_addition: int = 0,
     ):
         self.equipment_type = equipment_type
 
-        self.power_bonus = power_bonus
-        self.defense_bonus = defense_bonus
+        self.power_addition = power_addition
+        self.power_multiplier = power_multiplier
+
+        self.defense_addition = defense_addition
+        self.defense_multiplier = defense_multiplier
 
 class Dagger(Equippable):
     def __init__(self) -> None:

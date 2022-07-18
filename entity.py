@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from components.inventory import Inventory
     from components.level import Level
     from components.equippable import Equippable
+    from components.buff_container import BuffContainer
     from game_map import GameMap
 
 T = TypeVar("T", bound="Entity")
@@ -97,6 +98,7 @@ class Actor(Entity):
         equipment: Equipment,
         fighter: Fighter,
         inventory: Inventory,
+        buff_container: BuffContainer,
         level: Level,
     ):
         super().__init__(
@@ -119,6 +121,9 @@ class Actor(Entity):
 
         self.inventory = inventory
         self.inventory.parent = self
+
+        self.buff_container = buff_container
+        self.buff_container.parent = self
 
         self.level = level
         self.level.parent = self

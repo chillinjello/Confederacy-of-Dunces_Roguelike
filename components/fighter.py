@@ -93,17 +93,27 @@ class Fighter(BaseComponent):
 
     @property
     def defense_bonus(self) -> int:
+        addition = 0
+        multiplication = 1
         if self.parent.equipment:
-            return self.parent.equipment.defense_bonus
-        else:
-            return 0
+            multiplication *= self.parent.equipment.defense_multiplier
+            addition += self.parent.equipment.defense_addition
+        if self.parent.buff_container:
+            multiplication *= self.parent.buff_container.defense_multiplier
+            addition += self.parent.buff_container.defense_addition
+        return int(addition * multiplication)
 
     @property
     def power_bonus(self) -> int:
+        addition = 0
+        multiplication = 1
         if self.parent.equipment:
-            return self.parent.equipment.power_bonus
-        else:
-            return 0
+            multiplication *= self.parent.equipment.power_multiplier
+            addition += self.parent.equipment.power_addition
+        if self.parent.buff_container:
+            multiplication *= self.parent.buff_container.power_multiplier
+            addition += self.parent.buff_container.power_addition
+        return int(addition * multiplication)
 
     @property
     def valve_miss_chance(self) -> int:
