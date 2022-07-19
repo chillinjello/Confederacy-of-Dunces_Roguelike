@@ -7,6 +7,7 @@ import color
 import components.ai
 import components.inventory
 from components.base_component import BaseComponent
+from components.buff import Buff
 from exceptions import Impossible
 from input_handlers import (
     ActionOrHandler,
@@ -176,8 +177,21 @@ class DrNut(Consumable):
     def __init__(self, number_of_turns: int):
         self.number_of_turns = number_of_turns
 
+        self.defense_modifier = -5
+        self.power_modifier = 10
+
     def activate(self, action: actions.ItemAction) -> None:
-        pass
+        consumer = action.entity
+        dr_nut_buff = Buff(defense_addition=self.defense_modifier, power_addition=self.power_modifier)
+        consumer.buff_container.add_buff(dr_nut_buff)
+
+        self.engine.message_log.add_message(
+            f"You consume the delicious Dr. Nut! Your defense dropped {self.defense_modifier} and power increased {self.power_modifier}.",
+            color.health_recovered
+        )
+
+        self.consume()
+
 
 #
 # Targeted Consumables

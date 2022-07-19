@@ -1,7 +1,7 @@
-from components.base_component import BaseComponent
 from entity import Actor
-from components.buff import Buff
 
+# from components.buff import Buff
+from components.base_component import BaseComponent
 
 class BuffContainer(BaseComponent):
     parent: Actor
@@ -9,10 +9,11 @@ class BuffContainer(BaseComponent):
     def __init__(self):
         self.buff_list = []
 
-    def add_buff(self, buff: Buff):
+    def add_buff(self, buff: BaseComponent):
+        buff.parent = self
         self.buff_list.append(buff)
 
-    def remove_buff(self, buff: Buff):
+    def remove_buff(self, buff: BaseComponent):
         self.buff_list.remove(buff)
 
     def tick_buffs(self):
