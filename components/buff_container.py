@@ -31,7 +31,7 @@ class BuffContainer(BaseComponent):
     def power_addition(self):
         total_power_addition = 0
         for buff in self.buff_list:
-            total_power_addition *= buff.power_addition
+            total_power_addition += buff.power_addition
         return total_power_addition
 
     @property
@@ -45,5 +45,5 @@ class BuffContainer(BaseComponent):
     def defense_addition(self):
         total_defense_addition = 0
         for buff in self.buff_list:
-            total_defense_addition *= buff.defense_addition
+            total_defense_addition += buff.defense_addition
         return total_defense_addition

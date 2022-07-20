@@ -12,6 +12,7 @@ class Buff(BaseComponent):
         power_multiplier: int = 1,
         power_addition: int = 0,
         buff_time: int = -1,
+        time_expired_message: str = "",
     ):
         self.defense_multiplier = defense_multiplier
         self.defense_addition = defense_addition
@@ -20,6 +21,7 @@ class Buff(BaseComponent):
         self.power_addition = power_addition
 
         self.buff_time = buff_time
+        self.time_expired_message = time_expired_message
 
     def tick_buff_timer(self):
         if (self.buff_time == -1):
@@ -28,6 +30,11 @@ class Buff(BaseComponent):
         self.buff_time -= 1
         if (self.buff_time == -1):
             self.parent.remove_buff(self)
+            if (self.time_expired_message != ""):
+                self.engine.message_log.add_message(
+                    self.time_expired_message
+                )
+
 
 
 

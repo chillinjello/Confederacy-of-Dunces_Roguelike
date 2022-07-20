@@ -101,6 +101,8 @@ class Fighter(BaseComponent):
         if self.parent.buff_container:
             multiplication *= self.parent.buff_container.defense_multiplier
             addition += self.parent.buff_container.defense_addition
+            if self.parent.buff_container.defense_addition > 0:
+                pdb.set_trace()
         return int(addition * multiplication)
 
     @property

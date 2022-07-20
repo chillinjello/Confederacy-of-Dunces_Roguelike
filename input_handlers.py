@@ -121,6 +121,10 @@ class EventHandler(BaseEventHandler):
 
         self.engine.handle_enemy_turns()
 
+        # Turn is now over decrement buff counters
+        for entity in set(self.engine.game_map.actors):
+            entity.buff_container.tick_buffs()
+
         self.engine.update_fov()
         return True
 

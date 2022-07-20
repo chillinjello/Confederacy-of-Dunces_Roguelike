@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
+import pdb
 
 import actions
 import color
@@ -157,7 +158,7 @@ class FireballDamageConsumable(Consumable):
 #
 
 class JellyDonut(Consumable):
-    def __init__(self, amount: int):
+    def __init__(self, amount: int = 15):
         self.amount = amount
 
     def activate(self, action: actions.ItemAction) -> None:
@@ -174,7 +175,7 @@ class JellyDonut(Consumable):
             raise Impossible(f"Your health is already full.")
 
 class DrNut(Consumable):
-    def __init__(self, number_of_turns: int):
+    def __init__(self, number_of_turns: int = 20):
         self.number_of_turns = number_of_turns
 
         self.defense_modifier = -5
@@ -182,7 +183,12 @@ class DrNut(Consumable):
 
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
-        dr_nut_buff = Buff(defense_addition=self.defense_modifier, power_addition=self.power_modifier)
+        dr_nut_buff = Buff(
+            buff_time=self.number_of_turns,
+            defense_addition=self.defense_modifier, 
+            power_addition=self.power_modifier,
+            time_expired_message="Your delicious Dr. Nut wore off."
+        )
         consumer.buff_container.add_buff(dr_nut_buff)
 
         self.engine.message_log.add_message(

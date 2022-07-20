@@ -42,6 +42,19 @@ troll = Actor(
     level=Level(xp_given=100)
 )
 
+jelly_donut = Item(
+    char="o",
+    color=(207, 63, 255),
+    name="Jelly Donut",
+    consumable=consumable.JellyDonut()
+)
+dr_nut = Item(
+    char="u",
+    color=(127, 0, 255),
+    name="Dr. Nut",
+    consumable=consumable.DrNut()
+)
+
 confusion_scroll = Item(
     char="~",
     color=(207, 63, 255),
