@@ -449,8 +449,10 @@ class AreaRangedAttackHandler(SelectIndexHandler):
     def __init__(
         self,
         engine: Engine,
-        radius: int,
-        callback: Callable[[Tuple[int, int]], Optional[Action]]
+        callback: Callable[[Tuple[int, int]], Optional[Action]],
+        *,
+        radius: int = -1,
+        range: int = -1,
     ):
         super().__init__(engine)
 

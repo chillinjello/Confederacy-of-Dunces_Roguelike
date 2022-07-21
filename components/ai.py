@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import sys
 import random
 from typing import List, Tuple, TYPE_CHECKING, Optional
 
 import numpy as np # type: ignore
 import tcod
+
+import pdb
 
 from actions import Action, MeleeAction, MovementAction, WaitAction, BumpAction
 
@@ -45,6 +48,10 @@ class HostileEnemy(BaseAI):
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
+        self.targeted_ally: Actor = None
+
+    def find_target_within_distance(self) -> None:
+        pass
 
     def perform(self) -> None:
         target = self.engine.player
@@ -57,6 +64,53 @@ class HostileEnemy(BaseAI):
                 return MeleeAction(self.entity, dx, dy).perform()
 
             self.path = self.get_path_to(target.x, target.y)
+
+        if self.path:
+            dest_x, dest_y = self.path.pop(0)
+            return MovementAction(
+                self.entity, dest_x - self.entity.x, dest_y - self.entity.y,
+            ).perform()
+        
+        return WaitAction(self.entity).perform()
+
+class AllyEnemy(BaseAI):
+    def __init__(self, entity: Actor, search_distance: int = 40):
+        super().__init__(entity)
+        self.path: List[Tuple[int, int]] = []
+        self.targeted_enemy: Actor = None
+        self.search_distance = search_distance
+
+        self.entity.name = "Friendly " + self.entity.name
+
+    def find_enemy_within_distance(self):
+        closest_distance = sys.maxsize
+        closest_entity = None
+        for entity in self.entity.gamemap.hostile_actors:
+            if (entity == self.entity or not entity.is_alive):
+                continue
+            dx = entity.x - self.entity.x
+            dy = entity.y - self.entity.y
+            distance = max(abs(dx), abs(dy))
+            if (distance <= self.search_distance and distance < closest_distance):
+                closest_entity = entity
+                closest_distance = distance
+        self.targeted_enemy = closest_entity
+
+    def perform(self) -> None:
+        if (self.targeted_enemy == None or not self.targeted_enemy.is_alive):
+            self.find_enemy_within_distance()
+        
+        if (self.targeted_enemy == None):
+            return WaitAction(self.entity).perform()
+
+        dx = self.targeted_enemy.x - self.entity.x
+        dy = self.targeted_enemy.y - self.entity.y
+        distance = max(abs(dx), abs(dy))
+
+        if distance <= 1:
+            return MeleeAction(self.entity, dx, dy).perform()
+
+        self.path = self.get_path_to(self.targeted_enemy.x, self.targeted_enemy.y)
 
         if self.path:
             dest_x, dest_y = self.path.pop(0)

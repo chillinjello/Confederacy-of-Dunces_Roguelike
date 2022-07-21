@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from components.level import Level
     from components.equippable import Equippable
     from components.buff_container import BuffContainer
-    from game_map import GameMap
+    from game_map import gamemap
 
 T = TypeVar("T", bound="Entity")
 
@@ -24,11 +24,11 @@ class Entity:
     A generic object to represent players, enemies, items, etc.
     """
 
-    parent: Union[GameMap, Inventory]
+    parent: Union[gamemap, Inventory]
 
     def __init__(
         self, 
-        parent: Optional[GameMap] = None,
+        parent: Optional[gamemap] = None,
         x: int = 0, 
         y: int = 0, 
         char: str = "?", 
@@ -50,10 +50,14 @@ class Entity:
             parent.entities.add(self)
     
     @property
-    def gamemap(self) -> GameMap:
+    def gamemap(self) -> gamemap:
         return self.parent.gamemap
 
-    def spawn(self: T, gamemap: GameMap, x: int, y: int) -> T:
+    @property
+    def engine(self) -> Engine:
+        return self.parent.gamemap.engine
+
+    def spawn(self: T, gamemap: gamemap, x: int, y: int) -> T:
         """Spawn a copy of this instance at the given location."""
         clone = copy.deepcopy(self)
         clone.x = x
@@ -62,8 +66,8 @@ class Entity:
         gamemap.entities.add(clone)
         return clone
 
-    def place(self, x: int, y: int, gamemap: Optional[GameMap] = None) -> None:
-        """Place this entity at a new location. Handles moving across GameMaps."""
+    def place(self, x: int, y: int, gamemap: Optional[gamemap] = None) -> None:
+        """Place this entity at a new location. Handles moving across gamemaps."""
         self.x = x
         self.y = y
         if gamemap:
@@ -100,6 +104,7 @@ class Actor(Entity):
         inventory: Inventory,
         buff_container: BuffContainer,
         level: Level,
+        hostile: True,
     ):
         super().__init__(
             x=x,
@@ -127,6 +132,8 @@ class Actor(Entity):
 
         self.level = level
         self.level.parent = self
+
+        self.hostile = hostile
 
     @property
     def is_alive(self) -> bool:

@@ -17,6 +17,7 @@ player = Actor(
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(level_up_base=200),
+    hostile=False,
 )
 
 orc = Actor(
@@ -53,6 +54,12 @@ dr_nut = Item(
     color=(127, 0, 255),
     name="Dr. Nut",
     consumable=consumable.DrNut()
+)
+the_consolation_of_philosophy = Item(
+    char="=",
+    color=(127, 0, 255),
+    name="The Consolation of Philosophy",
+    consumable=consumable.TheConsolationOfPhilosophy(),
 )
 
 confusion_scroll = Item(

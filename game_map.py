@@ -42,6 +42,24 @@ class GameMap:
         )
 
     @property
+    def hostile_actors(self) -> Iterator[Actor]:
+        """Iterate over this maps living actors."""
+        yield from (
+            entity
+            for entity in self.entities
+            if isinstance(entity, Actor) and entity.is_alive and entity.hostile
+        )
+    
+    @property
+    def friendly_actors(self) -> Iterator[Actor]:
+        """Iterate over this maps living actors."""
+        yield from (
+            entity
+            for entity in self.entities
+            if isinstance(entity, Actor) and entity.is_alive and not entity.hostile
+        )
+
+    @property
     def items(self) -> Iterator[Item]:
         yield from (entity for entity in self.entities if isinstance(entity, Item))
 

@@ -209,3 +209,42 @@ class Cross(Consumable):
 
     def activate(self, action: actions.ItemAction) -> None:
         pass
+
+class TheConsolationOfPhilosophy(Consumable):
+    def __init__(self, time_length: int = -1, max_range: int = 15):
+        self.time_length = time_length
+        self.max_range = max_range
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Select a conversion location.", color.needs_target
+        )
+        return AreaRangedAttackHandler(
+            self.engine,
+            range=self.max_range,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        target = action.target_actor
+
+        if not self.engine.game_map.visible[action.target_xy]:
+            raise Impossible("You cannot target an area that you cannot see.")
+        if not target:
+            raise Impossible("You must select an enemy to target.")
+        if target is consumer:
+            raise Impossible("You're already enlightened!")
+        if target.distance(consumer.x, consumer.y) > self.max_range:
+            raise Impossible("Enemy out of range!")
+
+        self.engine.message_log.add_message(
+            f"The {target.name} has recieved enlightenment!",
+            color.status_effect_applied
+        )
+        target.ai = components.ai.AllyEnemy(
+            entity=target,
+            search_distance=10,
+        )
+
+        self.consume()
