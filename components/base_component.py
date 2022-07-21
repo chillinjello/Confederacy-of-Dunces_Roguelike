@@ -11,9 +11,9 @@ class BaseComponent:
     entity: Entity # Owning entity instance.
 
     @property
-    def gamemap(self) -> GameMap:
-        return self.parent.gamemap
+    def game_map(self) -> GameMap:
+        return self.parent.game_map
 
     @property
     def engine(self) -> Engine:
-        return self.gamemap.engine
+        return self.game_map.engine

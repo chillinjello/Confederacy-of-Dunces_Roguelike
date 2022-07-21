@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from components.level import Level
     from components.equippable import Equippable
     from components.buff_container import BuffContainer
-    from game_map import gamemap
+    from game_map import GameMap
 
 T = TypeVar("T", bound="Entity")
 
@@ -24,11 +24,11 @@ class Entity:
     A generic object to represent players, enemies, items, etc.
     """
 
-    parent: Union[gamemap, Inventory]
+    parent: Union[GameMap, Inventory]
 
     def __init__(
         self, 
-        parent: Optional[gamemap] = None,
+        parent: Optional[GameMap] = None,
         x: int = 0, 
         y: int = 0, 
         char: str = "?", 
@@ -50,32 +50,32 @@ class Entity:
             parent.entities.add(self)
     
     @property
-    def gamemap(self) -> gamemap:
-        return self.parent.gamemap
+    def game_map(self) -> game_map:
+        return self.parent.game_map
 
     @property
     def engine(self) -> Engine:
-        return self.parent.gamemap.engine
+        return self.parent.game_map.engine
 
-    def spawn(self: T, gamemap: gamemap, x: int, y: int) -> T:
+    def spawn(self: T, game_map: game_map, x: int, y: int) -> T:
         """Spawn a copy of this instance at the given location."""
         clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
-        clone.parent = gamemap
-        gamemap.entities.add(clone)
+        clone.parent = game_map
+        game_map.entities.add(clone)
         return clone
 
-    def place(self, x: int, y: int, gamemap: Optional[gamemap] = None) -> None:
-        """Place this entity at a new location. Handles moving across gamemaps."""
+    def place(self, x: int, y: int, game_map: Optional[game_map] = None) -> None:
+        """Place this entity at a new location. Handles moving across game_maps."""
         self.x = x
         self.y = y
-        if gamemap:
+        if game_map:
             if hasattr(self, "parent"): # Possibly uninitialized.
-                if self.parent is self.gamemap:
-                    self.gamemap.entities.remove(self)
-            self.parent = gamemap
-            gamemap.entities.add(self)
+                if self.parent is self.game_map:
+                    self.game_map.entities.remove(self)
+            self.parent = game_map
+            game_map.entities.add(self)
 
     def distance(self, x: int, y: int) -> float:
         """

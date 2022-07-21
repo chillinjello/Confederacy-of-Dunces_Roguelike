@@ -17,7 +17,7 @@ class Action:
 
     @property
     def engine(self) -> Engine:
-        """Return the engine this action belons to."""
+        """Return the engine this action belongs to."""
         return self.entity.parent.engine
         
     def perform(self) -> None:

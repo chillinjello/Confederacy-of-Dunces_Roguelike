@@ -30,6 +30,7 @@ orc = Actor(
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=35),
+    hostile=True,
 )
 troll = Actor(
     char="T", 
@@ -40,7 +41,8 @@ troll = Actor(
     fighter=Fighter(hp=16, base_defense=1, base_power=6),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100)
+    level=Level(xp_given=100),
+    hostile=True,
 )
 
 jelly_donut = Item(

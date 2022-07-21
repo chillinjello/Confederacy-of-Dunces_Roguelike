@@ -29,7 +29,7 @@ class GameMap:
         self.downstairs_location = (0, 0)
 
     @property
-    def gamemap(self) -> GameMap:
+    def game_map(self) -> GameMap:
         return self
 
     @property

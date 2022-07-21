@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import sys
 import random
-from typing import List, Tuple, TYPE_CHECKING, Optional
+from typing import List, Tuple, TYPE_CHECKING, Optional, Iterable
+
+from tcod.map import compute_fov
 
 import numpy as np # type: ignore
 import tcod
@@ -15,6 +17,10 @@ if TYPE_CHECKING:
     from entity import Actor
 
 class BaseAI(Action):
+    def __init__(self, entity: Actor, *, view_radius: int = 8):
+        super().__init__(entity)
+        self.view_radius = view_radius
+
     def perform(self) -> None:
         raise NotImplementedError()
 
@@ -44,22 +50,53 @@ class BaseAI(Action):
         # Convert from List[List[int]] to List[Tuple[int, int]].
         return [(index[0], index[1]) for index in path]
 
+    def find_target_within_distance(self, potential_targets: Iterable[Actor], radius: int = 8) -> Actor:
+        closest_actor = None
+        closest_distance = sys.maxsize
+        for target in potential_targets:
+            if (not self.fov[target.x, target.y]):
+                continue
+
+            dx = target.x - self.entity.x
+            dy = target.y - self.entity.y
+            distance = max(abs(dx), abs(dy)) # Chebyshev distance.
+            if (distance < closest_distance):
+                closest_distance = distance
+                closest_actor = target
+
+        return closest_actor
+
+    def update_fov(self, radius: int = 8):
+        self.fov = compute_fov(
+            self.engine.game_map.tiles["transparent"],
+            (self.entity.x, self.entity.y),
+            radius=radius,
+        )
+
+
 class HostileEnemy(BaseAI):
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
         self.targeted_ally: Actor = None
 
-    def find_target_within_distance(self) -> None:
-        pass
-
     def perform(self) -> None:
-        target = self.engine.player
+        self.update_fov()
+
+        # pdb.set_trace()
+        if self.targeted_ally == None or not self.targeted_ally.is_alive:
+            self.targeted_ally = self.find_target_within_distance(potential_targets=self.entity.game_map.friendly_actors)
+
+        if self.targeted_ally == None:
+            return WaitAction(self.entity).perform()
+
+        
+        target = self.targeted_ally
         dx = target.x - self.entity.x
         dy = target.y - self.entity.y
         distance = max(abs(dx), abs(dy)) # Chebyshev distance.
 
-        if self.engine.game_map.visible[self.entity.x, self.entity.y]:
+        if self.fov[self.entity.x, self.entity.y]:
             if distance <= 1:
                 return MeleeAction(self.entity, dx, dy).perform()
 
@@ -79,38 +116,29 @@ class AllyEnemy(BaseAI):
         self.path: List[Tuple[int, int]] = []
         self.targeted_enemy: Actor = None
         self.search_distance = search_distance
+        entity.hostile = False
 
         self.entity.name = "Friendly " + self.entity.name
 
-    def find_enemy_within_distance(self):
-        closest_distance = sys.maxsize
-        closest_entity = None
-        for entity in self.entity.gamemap.hostile_actors:
-            if (entity == self.entity or not entity.is_alive):
-                continue
-            dx = entity.x - self.entity.x
-            dy = entity.y - self.entity.y
-            distance = max(abs(dx), abs(dy))
-            if (distance <= self.search_distance and distance < closest_distance):
-                closest_entity = entity
-                closest_distance = distance
-        self.targeted_enemy = closest_entity
-
     def perform(self) -> None:
-        if (self.targeted_enemy == None or not self.targeted_enemy.is_alive):
-            self.find_enemy_within_distance()
-        
-        if (self.targeted_enemy == None):
+        self.update_fov()
+
+        if self.targeted_enemy == None or not self.targeted_enemy.is_alive:
+            self.targeted_enemy = self.find_target_within_distance(potential_targets=self.entity.game_map.hostile_actors)
+
+        if self.targeted_enemy == None:
             return WaitAction(self.entity).perform()
+        
+        target = self.targeted_enemy
+        dx = target.x - self.entity.x
+        dy = target.y - self.entity.y
+        distance = max(abs(dx), abs(dy)) # Chebyshev distance.
 
-        dx = self.targeted_enemy.x - self.entity.x
-        dy = self.targeted_enemy.y - self.entity.y
-        distance = max(abs(dx), abs(dy))
+        if self.fov[self.entity.x, self.entity.y]:
+            if distance <= 1:
+                return MeleeAction(self.entity, dx, dy).perform()
 
-        if distance <= 1:
-            return MeleeAction(self.entity, dx, dy).perform()
-
-        self.path = self.get_path_to(self.targeted_enemy.x, self.targeted_enemy.y)
+            self.path = self.get_path_to(target.x, target.y)
 
         if self.path:
             dest_x, dest_y = self.path.pop(0)
