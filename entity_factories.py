@@ -87,6 +87,20 @@ ticket_to_the_movies = Item(
     name="Ticket to the Movies",
     consumable=consumable.TicketToTheMovies(),
 )
+jazz_record = Item(
+    char="=",
+    color=(127,0,255),
+    name="Jazz Record",
+    consumable=consumable.JazzRecord(),
+)
+stained_sheet = Item(
+    char="#",
+    color=(127,0,255),
+    name="Stained Sheet",
+    consumable=consumable.StainedSheet(),
+)
+
+
 the_consolation_of_philosophy = Item(
     char="=",
     color=(127, 0, 255),

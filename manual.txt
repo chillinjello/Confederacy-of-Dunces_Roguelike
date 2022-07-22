@@ -76,7 +76,9 @@ Consumables:
     - Miss Trixie's Sandwhich:
         - 
     - Jazz Record:
-    - Sheet with "Crusade for Moorish Dignity" written on it:
+        - Makes everyone confused
+    - Stained Sheet with "Crusade for Moorish Dignity" written on it:
+        - Defense up 5 for 5 hits
     - Oven Wine:
     - Dirty Cat:
     - Women with Consolation of Philosophy

@@ -272,6 +272,51 @@ class TicketToTheMovies(Consumable):
 
         self.consume()
 
+class JazzRecord(Consumable):
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+
+        enemies_in_range = self.game_map.actors_within_fov(
+            consumer.x,
+            consumer.y,
+            range=10,
+            actors=self.game_map.hostile_actors,
+        )
+
+        if len(enemies_in_range) == 0:
+            raise Impossible(f"There's no one around to be hear your hip jazz music.")
+
+        for enemy in enemies_in_range:
+            enemy.ai = components.ai.ConfusedEnemy(
+                entity=enemy, previous_ai=enemy.ai, turns_remaining=self.number_of_turns
+            )
+
+        self.engine.message_log.add_message(
+            f"Jazz is for the people!",
+            color.health_recovered
+        )
+
+        self.consume()
+
+class StainedSheet(Consumable):
+    def __init__(self, ):
+        self.defense_modifier = 5
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        stained_sheet_buff = Buff(
+            defense_addition=self.defense_modifier, 
+            time_expired_message="Your sheet ripped.",
+        )
+        consumer.buff_container.add_buff(stained_sheet_buff)
+
+        self.engine.message_log.add_message(
+            f"You wrap your favorite sheet tightly around your body, raising your defense by {self.defense_modifier}.",
+            color.health_recovered
+        )
+
+        self.consume()
+
 
 #
 # Targeted Consumables
