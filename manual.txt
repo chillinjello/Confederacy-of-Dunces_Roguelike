@@ -70,7 +70,7 @@ Consumables:
     - Hot Dogs:
         - Increase max health 2
     - Communiss Pamflet:
-        - All onscreen enemies health is reduced to 1
+        - The health of the enemies on screen are lowered to the min health of enemies on screen
     - Ticket to the movies:
         - Teleport somewhere random on current floor
     - Miss Trixie's Sandwhich:

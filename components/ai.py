@@ -13,16 +13,19 @@ import pdb
 
 from actions import Action, MeleeAction, MovementAction, WaitAction, BumpAction
 
-if TYPE_CHECKING:
-    from entity import Actor
+from entity import Actor
 
 class BaseAI(Action):
     def __init__(self, entity: Actor, *, view_radius: int = 8):
         super().__init__(entity)
         self.view_radius = view_radius
+        self.current_target: Actor = None
 
     def perform(self) -> None:
         raise NotImplementedError()
+
+    def set_current_target(self, new_target: Actor) -> None:
+        self.current_target = new_target
 
     def get_path_to(self, dest_x: int, dest_y: int) -> List[Tuple[int, int]]:
         """Compute and return a path to the target position.
@@ -78,20 +81,17 @@ class HostileEnemy(BaseAI):
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
-        self.targeted_ally: Actor = None
 
     def perform(self) -> None:
         self.update_fov()
 
-        # pdb.set_trace()
-        if self.targeted_ally == None or not self.targeted_ally.is_alive:
-            self.targeted_ally = self.find_target_within_distance(potential_targets=self.entity.game_map.friendly_actors)
+        if self.current_target == None or not self.current_target.is_alive:
+            self.current_target = self.find_target_within_distance(potential_targets=self.entity.game_map.friendly_actors)
 
-        if self.targeted_ally == None:
+        if self.current_target == None:
             return WaitAction(self.entity).perform()
-
         
-        target = self.targeted_ally
+        target = self.current_target
         dx = target.x - self.entity.x
         dy = target.y - self.entity.y
         distance = max(abs(dx), abs(dy)) # Chebyshev distance.
@@ -114,22 +114,21 @@ class AllyEnemy(BaseAI):
     def __init__(self, entity: Actor, search_distance: int = 40):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
-        self.targeted_enemy: Actor = None
         self.search_distance = search_distance
-        entity.hostile = False
+        entity.hostile = Actor.FRIENDLY_ACTOR
 
         self.entity.name = "Friendly " + self.entity.name
 
     def perform(self) -> None:
         self.update_fov()
 
-        if self.targeted_enemy == None or not self.targeted_enemy.is_alive:
-            self.targeted_enemy = self.find_target_within_distance(potential_targets=self.entity.game_map.hostile_actors)
+        if self.current_target == None or not self.current_target.is_alive:
+            self.current_target = self.find_target_within_distance(potential_targets=self.entity.game_map.hostile_actors)
 
-        if self.targeted_enemy == None:
+        if self.current_target == None:
             return WaitAction(self.entity).perform()
         
-        target = self.targeted_enemy
+        target = self.current_target
         dx = target.x - self.entity.x
         dy = target.y - self.entity.y
         distance = max(abs(dx), abs(dy)) # Chebyshev distance.
@@ -147,6 +146,11 @@ class AllyEnemy(BaseAI):
             ).perform()
         
         return WaitAction(self.entity).perform()
+
+class InanimateObject(BaseAI):
+    def perform(self) -> None:
+        # Do Nothing
+        pass
 
 class ConfusedEnemy(BaseAI):
     """

@@ -9,7 +9,7 @@ from entity import Entity
 
 colors = {}
 item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.the_consolation_of_philosophy, 100)]
+    0: [(entity_factories.ticket_to_the_movies, 100)]
 }
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factories.orc, 80)],

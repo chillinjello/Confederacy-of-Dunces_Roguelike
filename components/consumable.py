@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 import pdb
+import sys
+import random
 
 import actions
 import color
 import components.ai
 import components.inventory
+import entity_factories
 from components.base_component import BaseComponent
 from components.buff import Buff
 from exceptions import Impossible
@@ -174,6 +177,23 @@ class JellyDonut(Consumable):
         else:
             raise Impossible(f"Your health is already full.")
 
+class HotDog(Consumable):
+    def __init__(self, amount: int = 2):
+        self.amount = amount
+
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        amount_recovered = consumer.fighter.increase_max_hp(self.amount)
+
+        if amount_recovered > 0:
+            self.engine.message_log.add_message(
+                f"The Hot Dog does wonders for your figure! Health increased by {self.amount}",
+                color.health_recovered
+            )
+            self.consume()
+        else:
+            raise Impossible(f"Your health is already maxed out or something, idk.")
+
 class DrNut(Consumable):
     def __init__(self, number_of_turns: int = 20):
         self.number_of_turns = number_of_turns
@@ -198,17 +218,113 @@ class DrNut(Consumable):
 
         self.consume()
 
+class CommunissPamflet(Consumable):
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+
+        enemies_in_range = self.game_map.actors_within_fov(
+            consumer.x,
+            consumer.y,
+            range=10,
+            actors=self.game_map.hostile_actors,
+        )
+
+        if len(enemies_in_range) == 0:
+            raise Impossible(f"There's no one around to be indoctrinated.")
+
+        #find lowest health of enemies
+        lowest_health = sys.maxsize
+        for enemy in enemies_in_range:
+            if enemy.fighter.hp < lowest_health:
+                lowest_health = enemy.fighter.hp
+
+        for enemy in enemies_in_range:
+            enemy.fighter.hp = lowest_health
+            self.engine.message_log.add_message(
+                f"The {enemy.name}'s health as been reduced to {lowest_health}.",
+                color.health_recovered
+            )
+
+        self.engine.message_log.add_message(
+            f"Workingmen of all countries unite!",
+            color.health_recovered
+        )
+
+        self.consume()
+
+class TicketToTheMovies(Consumable):
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+
+        walkable_coords = self.game_map.walkable_coords()
+        if len(walkable_coords) == 0:
+            raise Impossible("Sadly, the theater's are all closed.")
+        
+        r_index = random.randint(0, len(walkable_coords) - 1)
+        r_coord = walkable_coords[r_index]
+
+        consumer.place(*r_coord)
+
+        self.engine.message_log.add_message(
+            f"Who do they expect to buy this waste?",
+            color.health_recovered
+        )
+
+        self.consume()
+
 
 #
 # Targeted Consumables
 #
 
 class Cross(Consumable):
-    def __init__(self, health: int = 50):
+    def __init__(self, health: int = 50, max_range: int = 15):
         self.health = health
+        self.max_range = max_range
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Place your cross.", color.needs_target
+        )
+        return AreaRangedAttackHandler(
+            self.engine,
+            range=self.max_range,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
 
     def activate(self, action: actions.ItemAction) -> None:
-        pass
+        target_xy = action.target_xy
+        consumer = action.entity
+
+        if not self.engine.game_map.visible[target_xy]:
+            raise Impossible("You cannot place the cross beyond your vision.")
+
+        blocking_entity = self.game_map.get_blocking_entity_at_location(*target_xy)
+        in_bounds = self.game_map.in_bounds(*target_xy)
+        walkable = self.game_map.is_walkable(*target_xy)
+
+        if blocking_entity or not in_bounds or not walkable:
+            raise Impossible(f"Some earthly blemish is blocking you from placing the cross!")
+
+        dx = target_xy[0] - consumer.x
+        dy = target_xy[1] - consumer.y
+        distance = max(abs(dx), abs(dy))
+        if distance > self.max_range:
+            raise Impossible("Cross must be placed closer!")
+
+        self.engine.message_log.add_message(
+            f"Placing it down, you feel the room's energy gather around the cross.",
+            color.status_effect_applied
+        )
+        cross = entity_factories.cross_entity.spawn(self.game_map, *target_xy)
+
+        enemies = self.game_map.actors_within_fov(
+            *target_xy,
+            range=10,
+            actors=self.game_map.hostile_actors,
+        )
+        for enemy in enemies:
+            enemy.ai.set_current_target(cross)
 
 class TheConsolationOfPhilosophy(Consumable):
     def __init__(self, time_length: int = -1, max_range: int = 15):

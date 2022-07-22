@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import math
 from typing import Optional, Tuple, TypeVar, Type, TYPE_CHECKING, Union
+from xmlrpc.client import Boolean
 
 from render_order import RenderOrder
 
@@ -90,6 +91,11 @@ class Entity:
 
 
 class Actor(Entity):
+    HOSTILE_ACTOR = "HOSTILE_ACTOR"
+    FRIENDLY_ACTOR = "FRIENDLY_ACTOR"
+    NEUTRAL_ACTOR = "NEUTRAL_ACTOR"
+    INANIMATE_ACTOR = "INANIMATE_ACTOR"
+
     def __init__(
         self,
         *,
@@ -104,7 +110,7 @@ class Actor(Entity):
         inventory: Inventory,
         buff_container: BuffContainer,
         level: Level,
-        hostile: True,
+        hostile: str = HOSTILE_ACTOR,
     ):
         super().__init__(
             x=x,

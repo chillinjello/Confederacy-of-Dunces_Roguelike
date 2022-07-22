@@ -42,6 +42,12 @@ class Fighter(BaseComponent):
         if self._hp == 0 and self.parent.ai:
             self.die()
 
+    def increase_max_hp(self, value: int) -> None:
+        hp_to_add = max(0, value)
+        self.max_hp += value
+        self.heal(hp_to_add)
+        return hp_to_add
+
     @property
     def valve(self) -> int:
         return self._valve

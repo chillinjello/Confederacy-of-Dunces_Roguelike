@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Iterable, Iterator, Optional, TYPE_CHECKING
+from typing import Iterable, Iterator, Optional, Tuple, TYPE_CHECKING
 
 import numpy as np 
 from tcod.console import Console
+from tcod.map import compute_fov
 
 from entity import Actor, Item
 import tile_types
@@ -47,7 +48,7 @@ class GameMap:
         yield from (
             entity
             for entity in self.entities
-            if isinstance(entity, Actor) and entity.is_alive and entity.hostile
+            if isinstance(entity, Actor) and entity.is_alive and entity.hostile == Actor.HOSTILE_ACTOR
         )
     
     @property
@@ -56,8 +57,46 @@ class GameMap:
         yield from (
             entity
             for entity in self.entities
-            if isinstance(entity, Actor) and entity.is_alive and not entity.hostile
+            if isinstance(entity, Actor) and entity.is_alive and entity.hostile == Actor.FRIENDLY_ACTOR
         )
+
+    @property
+    def inanimate_actors(self) -> Iterator[Actor]:
+        """Iterate over this maps living actors."""
+        yield from (
+            entity
+            for entity in self.entities
+            if isinstance(entity, Actor) and entity.is_alive and entity.hostile == Actor.INANIMATE_ACTOR
+        )
+
+    def actors_within_range(self, x, y, range, actors=None):
+        if actors == None:
+            actors = self.actors
+
+        actors_in_range = []
+        for actor in actors:
+            if actor.distance(x, y) <= range:
+                actors_in_range.append(actor)
+        
+        return actors_in_range
+
+    def actors_within_fov(self, x, y, range, actors=None):
+        if actors == None:
+            actors = self.actors
+
+        fov = compute_fov(
+            self.tiles["transparent"],
+            (x,y),
+            radius = range,
+        )
+
+        actors_in_range = []
+        for actor in actors:
+            if fov[actor.x, actor.y]:
+                actors_in_range.append(actor)
+        
+        return actors_in_range
+
 
     @property
     def items(self) -> Iterator[Item]:
@@ -77,8 +116,20 @@ class GameMap:
         return None
 
     def in_bounds(self, x: int, y: int) -> bool:
-        """Return True if x and y are inside of teh bounds of this map"""
+        """Return True if x and y are inside of the bounds of this map"""
         return 0 <= x < self.width and 0 <= y < self.height
+
+    def is_walkable(self, x: int, y: int) -> bool:
+        """Return True if x and y are on a walkable tile"""
+        return self.tiles["walkable"][x,y]
+
+    def walkable_coords(self) -> Iterable(Tuple[int,int]):
+        walkable_coord_array = []
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.tiles["walkable"][x,y]:
+                    walkable_coord_array.append((x,y))
+        return walkable_coord_array
 
     def render(self, console: Console) -> None:
         """
