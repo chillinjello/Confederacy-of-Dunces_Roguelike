@@ -5,6 +5,7 @@ import os
 from typing import Optional, TYPE_CHECKING, Callable, Tuple, Union
 
 import tcod.event
+import tcod.los
 
 import actions
 from actions import (
@@ -442,6 +443,49 @@ class SingleRangedAttackHandler(SelectIndexHandler):
 
     def on_index_selected(self, x: int, y: int) -> Optional[Action]:
         return self.callback((x,y))
+
+class PathAttackHandler(SelectIndexHandler):
+    """Handles targeting which applies to a path."""
+
+    def __init__(
+        self,
+        engine: Engine,
+        callback: Callable[[Tuple[int, int]], Optional[Action]],
+        *,
+        range: int = -1,
+        starting_xy: Tuple[int, int],
+        stop_at_unwalkable: False,
+    ):
+        super().__init__(engine)
+
+        self.range = range
+        self.callback = callback
+        self.starting_xy = starting_xy
+        self.stop_at_unwalkable = stop_at_unwalkable
+
+    def on_render(self, console: tcod.Console) -> None:
+        """Highlight the tile under teh cursor."""
+        super().on_render(console)
+        end_x, end_y = self.engine.mouse_location
+        targeted_coords = tcod.los.bresenham(self.starting_xy, (end_x, end_y)).tolist()
+        targeted_coords.pop(0)
+        line_length = 1 # starts at 1 b/c ignoring player
+        for x, y in targeted_coords:
+            if self.stop_at_unwalkable:
+                if not self.engine.game_map.is_walkable(x,y):
+                    break
+
+            if line_length > self.range:
+                break
+            
+            console.tiles_rgb["bg"][x, y] = color.white
+            console.tiles_rgb["fg"][x, y] = color.black
+
+            line_length += 1
+
+    def on_index_selected(self, x: int, y: int) -> Optional[Action]:
+        return self.callback((x, y))
+
 
 class AreaRangedAttackHandler(SelectIndexHandler):
     """Handles targeting an area within a given radius. Any entity within the area will be affected."""

@@ -65,23 +65,39 @@ Consumables:
         - Drop a cross object that attracts
     - The Consolation of Philosophy:
         - Convert an enemy 
-    - Bowling Ball:
-        - Throw the blowing ball and deal 40 damage to every enemy in the path
     - Hot Dogs:
         - Increase max health 2
     - Communiss Pamflet:
         - The health of the enemies on screen are lowered to the min health of enemies on screen
     - Ticket to the movies:
         - Teleport somewhere random on current floor
-    - Miss Trixie's Sandwhich:
-        - 
     - Jazz Record:
         - Makes everyone confused
     - Stained Sheet with "Crusade for Moorish Dignity" written on it:
         - Defense up 5 for 5 hits
+    - Bowling Ball:
+        - Throw the blowing ball and deal 10 damage to every enemy in the path
     - Oven Wine:
+        - 3x3 radius
+        - Apply Bleed for 5 turns 1 damage pure turns
+        - Confuse all within area
+
+    - Miss Trixie's Combo:
+        - Trixie's Sandwich
+            - Increase max health 1
+        - Trixie's Retirement Ham
+            - Increase defense 1
+        - Trixie's Christmas Turkey
+            - Increase attack 1
+        - Combo (Retirement!):
+            - max health
+            - attack up 5
+            - defense up 5
+            - Summon Miss Trixie
     - Dirty Cat:
-    - Women with Consolation of Philosophy
+        - Health Down, attack up
+    - Nude Postcard
+        - Freeze Enemy for 20 turns
 
     
 Weapon ideas:

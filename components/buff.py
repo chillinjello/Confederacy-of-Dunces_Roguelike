@@ -7,6 +7,7 @@ class Buff(BaseComponent):
     def __init__(
         self,
         *,
+        name: str = "[No Buff Name]",
         defense_multiplier: int = 1,
         defense_addition: int = 0,
         power_multiplier: int = 1,
@@ -14,6 +15,8 @@ class Buff(BaseComponent):
         buff_time: int = -1,
         time_expired_message: str = "",
     ):
+        self.name = name
+
         self.defense_multiplier = defense_multiplier
         self.defense_addition = defense_addition
         
@@ -30,6 +33,10 @@ class Buff(BaseComponent):
         if (self.time_expired_message != ""):
             self.engine.message_log.add_message(
                 self.time_expired_message
+            )
+        else:
+            self.engine.message_log.add_message(
+                f"The {self.name} buff wore off."
             )
 
     def tick_buff_timer(self):
@@ -48,6 +55,7 @@ class SheetBuff(Buff):
     def __init__(
         self,
         *,
+        name: str = "[No Buff Name]",
         defense_multiplier: int = 1,
         defense_addition: int = 5,
         power_multiplier: int = 1,
@@ -56,7 +64,8 @@ class SheetBuff(Buff):
         time_expired_message: str = "",
         number_of_charges: int = 5,
     ):
-        super.__init__(
+        super().__init__(
+            name = name,
             defense_multiplier = defense_multiplier,
             defense_addition = defense_addition,
             power_multiplier = power_multiplier,
@@ -80,3 +89,34 @@ class SheetBuff(Buff):
         self.player_previous_hp = player_current_hp
 
         
+class BleedBuff(Buff):
+    def __init__(
+        self,
+        *,
+        name: str = "[No Buff Name]",
+        defense_multiplier: int = 1,
+        defense_addition: int = 5,
+        power_multiplier: int = 1,
+        power_addition: int = 0,
+        buff_time: int = -1,
+        time_expired_message: str = "",
+        damage: int = 1,
+    ):
+        super().__init__(
+            name = name,
+            defense_multiplier = defense_multiplier,
+            defense_addition = defense_addition,
+            power_multiplier = power_multiplier,
+            power_addition = power_addition,
+            buff_time = buff_time,
+            time_expired_message = time_expired_message,
+        )
+        self.damage = damage
+
+
+    def end_of_turn_affect(self):
+        self.engine.player.fighter.take_damage(self.damage)
+
+        self.engine.message_log.add_message(
+            self.time_expired_message
+        )

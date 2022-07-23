@@ -61,25 +61,33 @@ jelly_donut = Item(
     char="o",
     color=(207, 63, 255),
     name="Jelly Donut",
-    consumable=consumable.JellyDonut()
+    consumable=consumable.JellyDonut(
+        amount=15,
+    )
 )
 hot_dog = Item(
     char="~",
     color=(207, 63, 255),
     name="Hot Dog",
-    consumable=consumable.HotDog(),
+    consumable=consumable.HotDog(
+        amount=2,
+    ),
 )
 dr_nut = Item(
     char="u",
     color=(127, 0, 255),
     name="Dr. Nut",
-    consumable=consumable.DrNut()
+    consumable=consumable.DrNut(
+        number_of_turns=20,
+    )
 )
 communiss_pamflet = Item(
     char="m",
     color=(127, 0, 255),
     name="Communiss Pamflet",
-    consumable=consumable.CommunissPamflet(),
+    consumable=consumable.CommunissPamflet(
+        range=10,
+    ),
 )
 ticket_to_the_movies = Item(
     char="*",
@@ -91,7 +99,9 @@ jazz_record = Item(
     char="=",
     color=(127,0,255),
     name="Jazz Record",
-    consumable=consumable.JazzRecord(),
+    consumable=consumable.JazzRecord(
+        number_of_turns=10
+    ),
 )
 stained_sheet = Item(
     char="#",
@@ -99,19 +109,43 @@ stained_sheet = Item(
     name="Stained Sheet",
     consumable=consumable.StainedSheet(),
 )
-
-
+bowling_ball = Item(
+    char="0",
+    color=(127,0,255),
+    name="Bowling Ball",
+    consumable=consumable.BowlingBall(
+        base_damage=10,
+        additional_damage=5,
+        max_range=8
+    ),
+)
+oven_wine = Item(
+    char="i",
+    color=(127, 0, 255),
+    name="Oven Wine",
+    consumable=consumable.OvenWine(
+        damage=5,
+        radius=2,
+        number_of_turns=5,
+    ),
+)
 the_consolation_of_philosophy = Item(
     char="=",
     color=(127, 0, 255),
     name="The Consolation of Philosophy",
-    consumable=consumable.TheConsolationOfPhilosophy(),
+    consumable=consumable.TheConsolationOfPhilosophy(
+        time_length=-1,
+        max_range=15,
+    ),
 )
 cross_item = Item(
     char="t",
     color=(127, 0, 255),
     name="Calvary Cross",
-    consumable=consumable.Cross(),
+    consumable=consumable.Cross(
+        health=50,
+        max_range=15,
+    ),
 )
 
 # confusion_scroll = Item(

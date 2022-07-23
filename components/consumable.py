@@ -4,6 +4,7 @@ from typing import Optional, TYPE_CHECKING
 import pdb
 import sys
 import random
+import tcod.los
 
 import actions
 import color
@@ -11,11 +12,12 @@ import components.ai
 import components.inventory
 import entity_factories
 from components.base_component import BaseComponent
-from components.buff import Buff
+from components.buff import BleedBuff, Buff
 from exceptions import Impossible
 from input_handlers import (
     ActionOrHandler,
-    AreaRangedAttackHandler, 
+    AreaRangedAttackHandler,
+    PathAttackHandler, 
     SingleRangedAttackHandler
 )
 
@@ -219,13 +221,16 @@ class DrNut(Consumable):
         self.consume()
 
 class CommunissPamflet(Consumable):
+    def __init__(self, range: int = 10) -> None:
+        self.range = range
+
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
 
         enemies_in_range = self.game_map.actors_within_fov(
             consumer.x,
             consumer.y,
-            range=10,
+            range=self.range,
             actors=self.game_map.hostile_actors,
         )
 
@@ -273,6 +278,9 @@ class TicketToTheMovies(Consumable):
         self.consume()
 
 class JazzRecord(Consumable):
+    def __init__(self, number_of_turns) -> None:
+        self.number_of_turns = number_of_turns
+
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
 
@@ -306,7 +314,7 @@ class StainedSheet(Consumable):
         consumer = action.entity
         stained_sheet_buff = Buff(
             defense_addition=self.defense_modifier, 
-            time_expired_message="Your sheet ripped.",
+            time_expired_message="Your sheet tears and falls to the ground.",
         )
         consumer.buff_container.add_buff(stained_sheet_buff)
 
@@ -316,6 +324,8 @@ class StainedSheet(Consumable):
         )
 
         self.consume()
+
+
 
 
 #
@@ -408,4 +418,111 @@ class TheConsolationOfPhilosophy(Consumable):
             search_distance=10,
         )
 
+        self.consume()
+
+class BowlingBall(Consumable):
+    def __init__(self, base_damage: int = 10, additional_damage: int = 5, max_range: int = 8) -> None:
+        self.starting_pos = None
+        self.end_pos = None
+
+        self.base_damage = base_damage
+        self.additional_damage = additional_damage
+
+        self.max_range = max_range
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Select ball path.", color.needs_target
+        )
+        self.starting_pos = (consumer.x, consumer.y)
+        return PathAttackHandler(
+            self.engine,
+            range=self.max_range,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+            starting_xy=self.starting_pos,
+            stop_at_unwalkable=True,
+        )
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        full_coords = tcod.los.bresenham(self.starting_pos, action.target_xy).tolist()
+        full_coords.pop(0)
+        coords = []
+        line_length = 1
+        for coord in full_coords:
+            if not self.engine.game_map.is_walkable(*coord):
+                break
+            if line_length > self.max_range:
+                break
+
+            coords.append(coord)
+
+            line_length += 1
+            
+            
+        if (len(coords) <= 1):
+            raise Impossible("You cannot target yourself.")
+
+        # get rid of the first entry
+        coords.pop()
+        targets_in_line = []
+        for coord in coords:
+            coord_target = self.engine.game_map.get_actor_at_location(*coord)
+            if coord_target != None:
+                targets_in_line.append(coord_target)
+
+        if (len(targets_in_line) == 0):
+            raise Impossible("There are no enemies in your path to get bowled.")
+
+        total_damage = self.base_damage + (len(targets_in_line) - 1) * self.additional_damage
+        for target in targets_in_line:
+            target.fighter.take_damage(total_damage)
+            self.engine.message_log.add_message(
+                f"The {target.name} has been hit by the bowling ball. Strike!",
+                color.status_effect_applied
+            )
+
+        self.consume()
+
+class OvenWine(Consumable):
+    def __init__(self, damage: int = 5, radius: int = 1, number_of_turns: int = 5):
+        self.damage = damage
+        self.radius = radius
+        self.number_of_turns = number_of_turns
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Select a wine location.", color.needs_target
+        )
+        return AreaRangedAttackHandler(
+            self.engine,
+            radius=self.radius,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        target_xy = action.target_xy
+
+        if not self.engine.game_map.visible[target_xy]:
+            raise Impossible("You cannot wine an area that you cannot see.")
+
+        targets_hit = False
+        for actor in self.engine.game_map.actors:
+            if actor.distance(*target_xy) <= self.radius:
+                self.engine.message_log.add_message(
+                    f"The {actor.name} begins to bleed in the wake of splashes of glass and cheap wine, taking {self.damage} damage!"
+                )
+                actor.fighter.take_damage(self.damage)
+                actor.ai = components.ai.ConfusedEnemy(
+                    entity=actor, previous_ai=actor.ai, turns_remaining=self.number_of_turns
+                )
+                new_bleed_buff = BleedBuff(
+                    buff_time=self.number_of_turns,
+                    damage=self.damage,
+                    time_expired_message=f"The {actor.name}'s wine bottle inflicted wounds are healed.",
+                )
+                actor.buff_container.add_buff(new_bleed_buff)
+                targets_hit = True
+            
+        if not targets_hit:
+            raise Impossible("There are no targets in the radius.")
         self.consume()
