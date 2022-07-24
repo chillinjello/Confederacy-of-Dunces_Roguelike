@@ -484,9 +484,9 @@ class BowlingBall(Consumable):
         self.consume()
 
 class OvenWine(Consumable):
-    def __init__(self, damage: int = 5, radius: int = 1, number_of_turns: int = 5):
+    def __init__(self, damage: int = 5, diameter: int = 1, number_of_turns: int = 5):
         self.damage = damage
-        self.radius = radius
+        self.diameter = diameter
         self.number_of_turns = number_of_turns
 
     def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
@@ -495,7 +495,7 @@ class OvenWine(Consumable):
         )
         return AreaRangedAttackHandler(
             self.engine,
-            radius=self.radius,
+            diameter=self.diameter,
             callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
         )
     
@@ -507,7 +507,7 @@ class OvenWine(Consumable):
 
         targets_hit = False
         for actor in self.engine.game_map.actors:
-            if actor.distance(*target_xy) <= self.radius:
+            if actor.distance(*target_xy) <= self.diameter/2:
                 self.engine.message_log.add_message(
                     f"The {actor.name} begins to bleed in the wake of splashes of glass and cheap wine, taking {self.damage} damage!"
                 )

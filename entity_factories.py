@@ -100,7 +100,7 @@ jazz_record = Item(
     color=(127,0,255),
     name="Jazz Record",
     consumable=consumable.JazzRecord(
-        number_of_turns=10
+        number_of_turns=10,
     ),
 )
 stained_sheet = Item(
@@ -125,7 +125,7 @@ oven_wine = Item(
     name="Oven Wine",
     consumable=consumable.OvenWine(
         damage=5,
-        radius=2,
+        diameter=3,
         number_of_turns=5,
     ),
 )

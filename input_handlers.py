@@ -496,12 +496,14 @@ class AreaRangedAttackHandler(SelectIndexHandler):
         callback: Callable[[Tuple[int, int]], Optional[Action]],
         *,
         radius: int = -1,
+        diameter: int = -1,
         range: int = -1,
     ):
         super().__init__(engine)
 
         self.radius = radius
         self.callback = callback
+        self.diameter = diameter
 
     def on_render(self, console: tcod.Console) -> None:
         """Highlight the tile under teh cursor."""
@@ -510,14 +512,24 @@ class AreaRangedAttackHandler(SelectIndexHandler):
         x, y = self.engine.mouse_location
 
         # Draw a rectangle around the targeted area, so the player can see the affected tiles.
-        console.draw_frame(
-            x=x - self.radius - 1,
-            y=y - self.radius - 1,
-            width=self.radius ** 2,
-            height=self.radius ** 2,
-            fg=color.red,
-            clear=False,
-        )
+        if (self.radius > -1):
+            console.draw_frame(
+                x=x - self.radius - 1,
+                y=y - self.radius - 1,
+                width=self.radius ** 2,
+                height=self.radius ** 2,
+                fg=color.red,
+                clear=False,
+            )
+        elif (self.diameter > -1):
+            console.draw_frame(
+                x=x - (self.diameter//2),
+                y=y - (self.diameter//2),
+                width=self.diameter,
+                height=self.diameter,
+                fg=color.red,
+                clear=False,
+            )
 
     def on_index_selected(self, x: int, y: int) -> Optional[Action]:
         return self.callback((x, y))
