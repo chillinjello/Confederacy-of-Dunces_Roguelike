@@ -507,9 +507,11 @@ class OvenWine(Consumable):
 
         targets_hit = False
         for actor in self.engine.game_map.actors:
+            if actor is self.engine.player:
+                continue
             if actor.distance(*target_xy) <= self.diameter/2:
                 self.engine.message_log.add_message(
-                    f"The {actor.name} begins to bleed in the wake of splashes of glass and cheap wine, taking {self.damage} damage!"
+                    f"The {actor.name}is stunned and begins to bleed in the wake of splashes of glass and cheap wine, taking {self.damage} damage!"
                 )
                 actor.fighter.take_damage(self.damage)
                 actor.ai = components.ai.ConfusedEnemy(

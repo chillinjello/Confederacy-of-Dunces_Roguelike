@@ -73,20 +73,20 @@ class SheetBuff(Buff):
             buff_time = buff_time,
             time_expired_message = time_expired_message,
         )
-        self.player_previous_hp = self.engine.player.fighter.hp
+        self.actor_previous_hp = self.engine.player.fighter.hp
         self.charges = number_of_charges
 
 
     def end_of_turn_affect(self):
-        player_current_hp = self.engine.player.fighter.hp
-        if (self.player_previous_hp > player_current_hp):
+        actor_current_hp = self.parent.parent.fighter.hp
+        if (self.actor_previous_hp > actor_current_hp):
             self.charges -= 1
             if (self.charges == 0):
                 self.parent.remove_buff(self)
                 self.display_expired_message()
                 return
 
-        self.player_previous_hp = player_current_hp
+        self.actor_previous_hp = actor_current_hp
 
         
 class BleedBuff(Buff):
@@ -95,7 +95,7 @@ class BleedBuff(Buff):
         *,
         name: str = "[No Buff Name]",
         defense_multiplier: int = 1,
-        defense_addition: int = 5,
+        defense_addition: int = 0,
         power_multiplier: int = 1,
         power_addition: int = 0,
         buff_time: int = -1,
@@ -115,8 +115,7 @@ class BleedBuff(Buff):
 
 
     def end_of_turn_affect(self):
-        self.engine.player.fighter.take_damage(self.damage)
-
+        self.parent.parent.fighter.take_damage(self.damage)
         self.engine.message_log.add_message(
-            self.time_expired_message
+            f"The {self.parent.parent.name} takes {self.damage} bleed damage." 
         )
