@@ -12,7 +12,7 @@ import components.ai
 import components.inventory
 import entity_factories
 from components.base_component import BaseComponent
-from components.buff import BleedBuff, Buff
+from components.buff import BleedBuff, Buff, SheetBuff
 from exceptions import Impossible
 from input_handlers import (
     ActionOrHandler,
@@ -185,7 +185,7 @@ class HotDog(Consumable):
 
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
-        amount_recovered = consumer.fighter.increase_max_hp(self.amount)
+        amount_recovered = consumer.fighter.increase_base_max_hp(self.amount)
 
         if amount_recovered > 0:
             self.engine.message_log.add_message(
@@ -312,7 +312,7 @@ class StainedSheet(Consumable):
     
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
-        stained_sheet_buff = Buff(
+        stained_sheet_buff = SheetBuff(
             defense_addition=self.defense_modifier, 
             time_expired_message="Your sheet tears and falls to the ground.",
         )
@@ -325,7 +325,111 @@ class StainedSheet(Consumable):
 
         self.consume()
 
+class DirtyCat(Consumable):
+    def __init__(self, power_modifier: int = 2, max_health_modifier: int = -5):
+        self.power_modifier = power_modifier
+        self.max_health_modifier = max_health_modifier
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        dirty_cat_buff = Buff(
+            power_addition=self.power_modifier,
+            max_heath_addition=self.max_health_modifier,
+            buff_time=-1,
+            time_expired_message="This dirty cat buff should expire :s",
+        )
+        consumer.buff_container.add_buff(dirty_cat_buff)
 
+        self.engine.message_log.add_message(
+            f"The enriches your enderstanding of geometry, lowering your max health {self.max_health_modifier} and raising your power {self.power_modifier}.",
+            color.health_recovered
+        )
+
+        self.consume()
+
+class TrixieConsumable(Consumable):
+    def execute_trixie_consumable(self):
+        # max health
+        # max valve
+        # attack up 5
+        # defense up 5
+        # summon miss trixie
+        pass
+
+class TrixiesSandwich(TrixieConsumable):
+    def __init__(self, max_health_modifier: int = 1):
+        self.max_health_modifier = max_health_modifier
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        trixie_buff = Buff(
+            max_heath_addition=self.max_health_modifier,
+            buff_time=-1,
+            time_expired_message="Trixie buff shouldnt expire",
+        )
+        consumer.buff_container.add_buff(trixie_buff)
+
+        self.engine.message_log.add_message(
+            f"This the ham in this sandwich reminds you of retirement.",
+            color.health_recovered
+        )
+
+        consumer.trixie_sandwich = True
+        if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
+            self.execute_trixie_consumable()
+            consumer.trixie_transformation_executed = True
+
+        self.consume()
+
+class TrixiesRetirementHam(TrixieConsumable):
+    def __init__(self, defense_addition: int = 1):
+        self.defense_addition = defense_addition
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        trixie_buff = Buff(
+            defense_addition=self.defense_addition,
+            buff_time=-1,
+            time_expired_message="Trixie buff shouldnt expire",
+        )
+        consumer.buff_container.add_buff(trixie_buff)
+
+        self.engine.message_log.add_message(
+            f"The sweet flavor of retirement embodied in a piece of meat.",
+            color.health_recovered
+        )
+
+        consumer.trixie_ham = True
+        if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
+            self.execute_trixie_consumable()
+            consumer.trixie_transformation_executed = True
+
+        self.consume()
+
+class TrixiesChristmasTurkey(TrixieConsumable):
+    def __init__(self, power_addition: int = 1):
+        self.power_addition = power_addition
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        trixie_buff = Buff(
+            power_addition=self.power_addition,
+            buff_time=-1,
+            time_expired_message="Trixie buff shouldnt expire",
+        )
+        consumer.buff_container.add_buff(trixie_buff)
+
+        self.engine.message_log.add_message(
+            f"Free holiday meat reminds you of retirement, firering you up.",
+            color.health_recovered
+        )
+
+        consumer.trixie_turkey = True
+        if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
+            self.execute_trixie_consumable()
+            consumer.trixie_transformation_executed = True
+
+        self.consume()
 
 
 #
@@ -383,7 +487,6 @@ class Cross(Consumable):
 
 class TheConsolationOfPhilosophy(Consumable):
     def __init__(self, time_length: int = -1, max_range: int = 15):
-        self.time_length = time_length
         self.max_range = max_range
 
     def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
@@ -511,9 +614,8 @@ class OvenWine(Consumable):
                 continue
             if actor.distance(*target_xy) <= self.diameter/2:
                 self.engine.message_log.add_message(
-                    f"The {actor.name}is stunned and begins to bleed in the wake of splashes of glass and cheap wine, taking {self.damage} damage!"
+                    f"The {actor.name} is stunned and begins to bleed in the wake of splashes of glass and cheap wine!"
                 )
-                actor.fighter.take_damage(self.damage)
                 actor.ai = components.ai.ConfusedEnemy(
                     entity=actor, previous_ai=actor.ai, turns_remaining=self.number_of_turns
                 )
@@ -527,4 +629,43 @@ class OvenWine(Consumable):
             
         if not targets_hit:
             raise Impossible("There are no targets in the radius.")
+        self.consume()
+
+class NudePostcard(Consumable):
+    def __init__(self, time_length: int = -1, max_range: int = 15):
+        self.time_length = time_length
+        self.max_range = max_range
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Select opponent to corrupt location.", color.needs_target
+        )
+        return AreaRangedAttackHandler(
+            self.engine,
+            range=self.max_range,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
+    
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        target = action.target_actor
+
+        if not self.engine.game_map.visible[action.target_xy]:
+            raise Impossible("You cannot target an area that you cannot see.")
+        if not target:
+            raise Impossible("You must select an enemy to target.")
+        if target is consumer:
+            raise Impossible("You aren't interested in this filth!")
+        if target.distance(consumer.x, consumer.y) > self.max_range:
+            raise Impossible("Enemy out of range!")
+
+        self.engine.message_log.add_message(
+            f"The {target.name} has been corrupted, though it was inevitable!",
+            color.status_effect_applied
+        )
+        
+        target.ai = components.ai.FrozenEnemy(
+            entity=target, previous_ai=target.ai, turns_remaining=self.time_length
+        )
+ 
         self.consume()

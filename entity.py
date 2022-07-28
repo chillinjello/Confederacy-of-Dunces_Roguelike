@@ -89,6 +89,10 @@ class Entity:
         self.x += dx
         self.y += dy
 
+    def tick(self) -> None:
+        # End of turn callback function
+        pass
+
 
 class Actor(Entity):
     HOSTILE_ACTOR = "HOSTILE_ACTOR"
@@ -139,7 +143,22 @@ class Actor(Entity):
         self.level = level
         self.level.parent = self
 
+        self.trixie_ham = False
+        self.trixie_sandwich = False
+        self.trixie_turkey = False
+        self.trixie_transformation_executed = False
+
         self.hostile = hostile
+
+    def tick(self) -> None:
+        # buffs are ticked first
+        self.buff_container.tick()
+        # fighter is ticked last
+        self.fighter.tick()
+
+    @property
+    def trixie_transformation(self) -> bool:
+        return self.trixie_ham and self.trixie_sandwich and self.trixie_turkey
 
     @property
     def is_alive(self) -> bool:

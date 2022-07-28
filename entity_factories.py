@@ -109,6 +109,15 @@ stained_sheet = Item(
     name="Stained Sheet",
     consumable=consumable.StainedSheet(),
 )
+dirty_cat = Item(
+    char="w",
+    color=(127,0,255),
+    name="Dirty Cat",
+    consumable=consumable.DirtyCat(
+        power_modifier=2,
+        max_health_modifier=-5,
+    ),
+)
 bowling_ball = Item(
     char="0",
     color=(127,0,255),
@@ -124,7 +133,7 @@ oven_wine = Item(
     color=(127, 0, 255),
     name="Oven Wine",
     consumable=consumable.OvenWine(
-        damage=5,
+        damage=1,
         diameter=3,
         number_of_turns=5,
     ),
@@ -146,6 +155,15 @@ cross_item = Item(
         health=50,
         max_range=15,
     ),
+)
+nude_postcard = Item(
+    char="r",
+    color=(127, 0, 255),
+    name="Nude Postcard",
+    consumable=consumable.NudePostcard(
+        20,
+        15,
+    )
 )
 
 # confusion_scroll = Item(

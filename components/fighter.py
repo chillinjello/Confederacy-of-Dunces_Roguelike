@@ -24,7 +24,7 @@ class Fighter(BaseComponent):
         *,
         is_player: bool = False
     ):
-        self.max_hp = hp
+        self.base_max_hp = hp
         self._hp = hp
         self.base_defense = base_defense
         self.base_power = base_power
@@ -42,9 +42,16 @@ class Fighter(BaseComponent):
         if self._hp == 0 and self.parent.ai:
             self.die()
 
-    def increase_max_hp(self, value: int) -> None:
+    @property
+    def max_hp(self) -> int:
+        final_max_health = self.base_max_hp
+        if self.parent.buff_container:
+            final_max_health += self.parent.buff_container.max_health_addition
+        return final_max_health
+
+    def increase_base_max_hp(self, value: int) -> None:
         hp_to_add = max(0, value)
-        self.max_hp += value
+        self.base_max_hp += value
         self.heal(hp_to_add)
         return hp_to_add
 
@@ -138,6 +145,10 @@ class Fighter(BaseComponent):
     @property
     def miss_chance(self) -> int:
         return self.valve_miss_chance
+
+    def tick(self) -> None:
+        if self._hp > self.max_hp:
+            self._hp = self.max_hp
 
     def die(self) -> None:
         if self.engine.player is self.parent:

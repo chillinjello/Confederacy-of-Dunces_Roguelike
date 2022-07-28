@@ -22,3 +22,6 @@ class Inventory(BaseComponent):
         item.place(self.parent.x, self.parent.y, self.game_map)
 
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
+
+    def tick(self) -> None:
+        pass

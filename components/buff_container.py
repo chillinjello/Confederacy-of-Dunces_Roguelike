@@ -16,7 +16,7 @@ class BuffContainer(BaseComponent):
     def remove_buff(self, buff: BaseComponent):
         self.buff_list.remove(buff)
 
-    def tick_buffs(self):
+    def tick(self):
         for buff in list(self.buff_list):
             buff.tick_buff_timer()
 
@@ -47,3 +47,10 @@ class BuffContainer(BaseComponent):
         for buff in self.buff_list:
             total_defense_addition += buff.defense_addition
         return total_defense_addition
+
+    @property
+    def max_health_addition(self):
+        total_max_health_addition = 0
+        for buff in self.buff_list:
+            total_max_health_addition += buff.max_health_addition
+        return total_max_health_addition

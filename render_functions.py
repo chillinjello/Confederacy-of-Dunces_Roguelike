@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 def render_health_bar(
     console: Console, current_value: int, maximum_value: int, total_width: int
 ) -> None:
-    bar_width = int(float(current_value) / maximum_value * total_width)
+    bar_width = 0
+    if (maximum_value != 0):
+        bar_width = int(float(current_value) / maximum_value * total_width)
 
     console.draw_rect(x=0, y=45, width=total_width, height=1, ch=1, bg=color.bar_empty)
 

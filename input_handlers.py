@@ -122,9 +122,9 @@ class EventHandler(BaseEventHandler):
 
         self.engine.handle_enemy_turns()
 
-        # Turn is now over decrement buff counters
+        # end of the turn actions for all actors
         for entity in set(self.engine.game_map.actors):
-            entity.buff_container.tick_buffs()
+            entity.tick()
 
         self.engine.update_fov()
         return True
@@ -609,7 +609,7 @@ class LevelUpEventHandler(AskUserEventHandler):
 
         if 0 <= index <= 2:
             if index == 0:
-                player.level.increase_max_hp()
+                player.level.increase_base_max_hp()
             elif index == 1:
                 player.level.increase_power()
             else:

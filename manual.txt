@@ -81,7 +81,11 @@ Consumables:
         - 3x3 radius
         - Apply Bleed for 5 turns 1 damage pure turns
         - Confuse all within area
-
+    - Nude Postcard
+        - Freeze Enemy for 20 turns
+    - Dirty Cat:
+        - Health Down, attack up
+        
     - Miss Trixie's Combo:
         - Trixie's Sandwich
             - Increase max health 1
@@ -94,10 +98,6 @@ Consumables:
             - attack up 5
             - defense up 5
             - Summon Miss Trixie
-    - Dirty Cat:
-        - Health Down, attack up
-    - Nude Postcard
-        - Freeze Enemy for 20 turns
 
     
 Weapon ideas:

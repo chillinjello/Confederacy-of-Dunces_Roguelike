@@ -1,5 +1,6 @@
 from components.base_component import BaseComponent
 from components.buff_container import BuffContainer
+import color
 
 class Buff(BaseComponent):
     parent: BuffContainer
@@ -12,6 +13,7 @@ class Buff(BaseComponent):
         defense_addition: int = 0,
         power_multiplier: int = 1,
         power_addition: int = 0,
+        max_heath_addition: int = 0,
         buff_time: int = -1,
         time_expired_message: str = "",
     ):
@@ -22,6 +24,8 @@ class Buff(BaseComponent):
         
         self.power_multiplier = power_multiplier
         self.power_addition = power_addition
+
+        self.max_health_addition = max_heath_addition
 
         self.buff_time = buff_time
         self.time_expired_message = time_expired_message
@@ -60,6 +64,7 @@ class SheetBuff(Buff):
         defense_addition: int = 5,
         power_multiplier: int = 1,
         power_addition: int = 0,
+        max_health_addition: int = 0,
         buff_time: int = -1,
         time_expired_message: str = "",
         number_of_charges: int = 5,
@@ -70,6 +75,7 @@ class SheetBuff(Buff):
             defense_addition = defense_addition,
             power_multiplier = power_multiplier,
             power_addition = power_addition,
+            max_heath_addition=max_health_addition,
             buff_time = buff_time,
             time_expired_message = time_expired_message,
         )
@@ -98,6 +104,7 @@ class BleedBuff(Buff):
         defense_addition: int = 0,
         power_multiplier: int = 1,
         power_addition: int = 0,
+        max_health_addition: int = 0,
         buff_time: int = -1,
         time_expired_message: str = "",
         damage: int = 1,
@@ -108,6 +115,7 @@ class BleedBuff(Buff):
             defense_addition = defense_addition,
             power_multiplier = power_multiplier,
             power_addition = power_addition,
+            max_heath_addition=max_health_addition,
             buff_time = buff_time,
             time_expired_message = time_expired_message,
         )
@@ -117,5 +125,6 @@ class BleedBuff(Buff):
     def end_of_turn_affect(self):
         self.parent.parent.fighter.take_damage(self.damage)
         self.engine.message_log.add_message(
-            f"The {self.parent.parent.name} takes {self.damage} bleed damage." 
+            f"The {self.parent.parent.name} takes {self.damage} bleed damage.",
+            color.player_atk 
         )
