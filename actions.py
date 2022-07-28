@@ -159,6 +159,8 @@ class MeleeAction(ActionWithDirection):
             target.fighter.take_damage(damage)
         else:
             self.engine.message_log.add_message(f"{attack_desc} but does not damage.", attack_color)
+        target.equipment.take_hit(self.entity, target)
+        self.entity.equipment.use_weapon(self.entity, target)
 
 
 class MovementAction(ActionWithDirection):

@@ -57,6 +57,8 @@ class Engine:
         render_functions.render_valve_bar(
             console=console,
             valve_level=self.player.fighter.valve_level,
+            current_valve=self.player.fighter.valve,
+            max_valve=self.player.fighter.max_valve,
             total_width=20,
         )
 

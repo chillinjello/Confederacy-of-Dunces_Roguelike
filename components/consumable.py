@@ -348,13 +348,28 @@ class DirtyCat(Consumable):
         self.consume()
 
 class TrixieConsumable(Consumable):
-    def execute_trixie_consumable(self):
+    def execute_trixie_consumable(self, consumer: Actor):
+        fighter = consumer.fighter
+        if not fighter:
+            raise Impossible(f"Can't use the trixie transformation for some reason")
         # max health
+        fighter.max_out_health()
         # max valve
+        fighter.max_out_valve()
         # attack up 5
         # defense up 5
-        # summon miss trixie
-        pass
+        trixie_buff = Buff(
+            power_addition=5,
+            defense_addition=5,
+            buff_time=-1,
+            time_expired_message="Trixie transformation shouldn't expire",
+        )
+        consumer.buff_container.add_buff(trixie_buff)
+        # TODO: summon miss trixie
+        self.engine.message_log.add_message(
+            f"Retirement is near!",
+            color.health_recovered
+        )
 
 class TrixiesSandwich(TrixieConsumable):
     def __init__(self, max_health_modifier: int = 1):
@@ -376,7 +391,7 @@ class TrixiesSandwich(TrixieConsumable):
 
         consumer.trixie_sandwich = True
         if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
-            self.execute_trixie_consumable()
+            self.execute_trixie_consumable(consumer)
             consumer.trixie_transformation_executed = True
 
         self.consume()
@@ -401,7 +416,7 @@ class TrixiesRetirementHam(TrixieConsumable):
 
         consumer.trixie_ham = True
         if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
-            self.execute_trixie_consumable()
+            self.execute_trixie_consumable(consumer)
             consumer.trixie_transformation_executed = True
 
         self.consume()
@@ -426,7 +441,7 @@ class TrixiesChristmasTurkey(TrixieConsumable):
 
         consumer.trixie_turkey = True
         if not consumer.trixie_transformation_executed and consumer.trixie_transformation:
-            self.execute_trixie_consumable()
+            self.execute_trixie_consumable(consumer)
             consumer.trixie_transformation_executed = True
 
         self.consume()

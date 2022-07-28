@@ -58,7 +58,7 @@ cross_entity = Actor(
 )
 
 jelly_donut = Item(
-    char="o",
+    char="!",
     color=(207, 63, 255),
     name="Jelly Donut",
     consumable=consumable.JellyDonut(
@@ -66,7 +66,7 @@ jelly_donut = Item(
     )
 )
 hot_dog = Item(
-    char="~",
+    char="!",
     color=(207, 63, 255),
     name="Hot Dog",
     consumable=consumable.HotDog(
@@ -74,7 +74,7 @@ hot_dog = Item(
     ),
 )
 dr_nut = Item(
-    char="u",
+    char="!",
     color=(127, 0, 255),
     name="Dr. Nut",
     consumable=consumable.DrNut(
@@ -82,7 +82,7 @@ dr_nut = Item(
     )
 )
 communiss_pamflet = Item(
-    char="m",
+    char="!",
     color=(127, 0, 255),
     name="Communiss Pamflet",
     consumable=consumable.CommunissPamflet(
@@ -90,13 +90,13 @@ communiss_pamflet = Item(
     ),
 )
 ticket_to_the_movies = Item(
-    char="*",
+    char="!",
     color=(127, 0, 255),
     name="Ticket to the Movies",
     consumable=consumable.TicketToTheMovies(),
 )
 jazz_record = Item(
-    char="=",
+    char="!",
     color=(127,0,255),
     name="Jazz Record",
     consumable=consumable.JazzRecord(
@@ -104,13 +104,13 @@ jazz_record = Item(
     ),
 )
 stained_sheet = Item(
-    char="#",
+    char="!",
     color=(127,0,255),
     name="Stained Sheet",
     consumable=consumable.StainedSheet(),
 )
 dirty_cat = Item(
-    char="w",
+    char="!",
     color=(127,0,255),
     name="Dirty Cat",
     consumable=consumable.DirtyCat(
@@ -119,7 +119,7 @@ dirty_cat = Item(
     ),
 )
 bowling_ball = Item(
-    char="0",
+    char="~",
     color=(127,0,255),
     name="Bowling Ball",
     consumable=consumable.BowlingBall(
@@ -129,7 +129,7 @@ bowling_ball = Item(
     ),
 )
 oven_wine = Item(
-    char="i",
+    char="~",
     color=(127, 0, 255),
     name="Oven Wine",
     consumable=consumable.OvenWine(
@@ -139,7 +139,7 @@ oven_wine = Item(
     ),
 )
 the_consolation_of_philosophy = Item(
-    char="=",
+    char="~",
     color=(127, 0, 255),
     name="The Consolation of Philosophy",
     consumable=consumable.TheConsolationOfPhilosophy(
@@ -148,7 +148,7 @@ the_consolation_of_philosophy = Item(
     ),
 )
 cross_item = Item(
-    char="t",
+    char="~",
     color=(127, 0, 255),
     name="Calvary Cross",
     consumable=consumable.Cross(
@@ -157,7 +157,7 @@ cross_item = Item(
     ),
 )
 nude_postcard = Item(
-    char="r",
+    char="~",
     color=(127, 0, 255),
     name="Nude Postcard",
     consumable=consumable.NudePostcard(
@@ -166,38 +166,60 @@ nude_postcard = Item(
     )
 )
 
-# confusion_scroll = Item(
-#     char="~",
-#     color=(207, 63, 255),
-#     name="Confusion Scroll",
-#     consumable=consumable.ConfusionConsumable(number_of_turns=10),
-# )
-# health_potion = Item(
-#     char="!",
-#     color=(127, 0, 255),
-#     name="Health Potion",
-#     consumable=consumable.HealingConsumable(amount=4,)
-# )
-# lightning_scroll = Item(
-#     char="~",
-#     color=(255, 255, 0),
-#     name="Lightning Scroll",
-#     consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
-# )
-# fireball_scroll = Item(
-#     char="~",
-#     color=(255,0,0),
-#     name="Fireball Scroll",
-#     consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
-# )
-
-dagger = Item(
-    char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger()
+plastic_scimitar = Item(
+    char="/", 
+    color=(0, 191, 255), 
+    name="Plastic Scimitar", 
+    equippable=equippable.PlasticScimitar(
+        power_addition=3
+    )
+)
+big_chief_tablet = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Big Cief Tablet",
+    equippable=equippable.BigChiefTablet(
+        power_addition=2,
+        defense_subtraction=1
+    )
+)
+lute = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Lute",
+    equippable=equippable.Lute(
+        power_addition=2,
+        splash_damage=2,
+        splash_range=1
+    )
+)
+chains = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Chains",
+    equippable=equippable.Chains(
+        power_addition=3,
+        freeze_length=3,
+    )
+)
+brick = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Brick",
+    equippable=equippable.Brick(
+        power_addition=5,
+    )
+)
+broom = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Broom",
+    equippable=equippable.Broom(
+        power_addition=3, 
+        push_back_distance=2
+    ),
 )
 
-sword = Item(
-    char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword()
-)
 
 leather_armor = Item(
     char="[", color=(139, 69, 19), name="Leather Armor", equippable=equippable.LeatherArmor()

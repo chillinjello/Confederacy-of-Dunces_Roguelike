@@ -1,9 +1,14 @@
 from __future__ import annotations
+from gc import freeze
 
 from typing import TYPE_CHECKING
 
+import color
 from components.base_component import BaseComponent
+from components.buff import BleedBuff, Buff
+from components.ai import FrozenEnemy
 from equipment_types import EquipmentType
+from entity import Actor
 
 if TYPE_CHECKING:
     from entity import Item
@@ -27,18 +32,152 @@ class Equippable(BaseComponent):
         self.defense_addition = defense_addition
         self.defense_multiplier = defense_multiplier
 
-class Dagger(Equippable):
-    def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, power_addition=2)
+    def equipment_message(self, attacker: Actor, message, *, target: Actor = None) -> None:
+        if target is not None and not target.is_alive:
+            # don't display a message because actor is already dead
+            return
 
-class Sword(Equippable):
-    def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, power_addition=4)
+        text_color = color.equipment_neutural
+        if (attacker == self.engine.player) :
+            text_color = color.equipment_positive
+        else:
+            text_color = color.equipment_negative
 
-class LeatherArmor(Equippable):
-    def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.ARMOR, defense_addition=1)
+        self.engine.message_log.add_message(
+            message, text_color
+        )
 
-class ChainMail(Equippable):
+class Weapon(Equippable):
+    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
+        equipment_type=EquipmentType.WEAPON
+        super().__init__(equipment_type, power_multiplier, power_addition, defense_multiplier, defense_addition)
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        # self.engine.message_log.add_message(
+        #     f"{attacker.name} hit {target.name}",
+        # )
+        pass
+
+class Armor(Equippable):
+    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
+        equipment_type=EquipmentType.ARMOR
+        super().__init__(equipment_type, power_multiplier, power_addition, defense_multiplier, defense_addition)
+
+    def take_hit(self, attacker: Actor, target: Actor) -> None:
+        # self.engine.message_log.add_message(
+        #     f"{target.name} took a hit from {attacker.name}",
+        # )
+        pass
+
+"""
+Weapons
+"""
+
+class PlasticScimitar(Weapon):
+    def __init__(self, power_addition=3, bleed_damage=1, bleed_time=10) -> None:
+        super().__init__(power_addition=power_addition)
+        self.bleed_damage = bleed_damage
+        self.bleed_time = bleed_time
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        # give enemy bleed (de)buff
+        debuf = BleedBuff(
+            damage=self.bleed_damage,
+            buff_time=self.bleed_time,
+            time_expired_message=f"A Scimitar inflicted gash has healed on {target.name}'s mangled body."
+        )
+        target.buff_container.add_buff(debuf)
+        self.equipment_message(attacker, f"The scimitar's mortal blow made {target.name} start to bleed", target=target)
+
+
+class BigChiefTablet(Weapon):
+    def __init__(self, power_addition=2, defense_subtraction: int = 1) -> None:
+        super().__init__(power_addition=power_addition)
+        self.defense_subtraction = defense_subtraction
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        # give enemy -1 
+        debuf = Buff(
+            defense_addition=(-1 * self.defense_subtraction),
+            time_expired_message="Time shouldn't expire for big chief debuf",
+        )
+        target.buff_container.add_buff(debuf)
+        self.equipment_message(attacker, f"The Big Chief Tablet lowered {target.name}'s defense by {self.defense_subtraction}", target=target)
+
+
+class Lute(Weapon):
+    def __init__(self, power_addition=2, splash_damage: int = 2, splash_range: int = 1):
+        super().__init__(power_addition=power_addition)
+        self.splash_damage = splash_damage
+        self.splash_range = splash_range
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        x = target.x
+        y = target.y
+        actors = self.game_map.actors_within_range(x,y,self.splash_range)
+        for actor in actors: 
+            if actor == attacker or actor == target:
+                continue
+            actor.fighter.take_damage(self.splash_damage)
+            self.equipment_message(attacker, f"{target.name.capitalize()} was hit by {self.splash_damage} splash damage.", target=target)
+
+class Chains(Weapon):
+    def __init__(self, power_addition=3, freeze_length=3):
+        super().__init__(power_addition=power_addition)
+        self.freeze_length = freeze_length
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        target.ai = FrozenEnemy(
+            entity=target,
+            previous_ai=target.ai,
+            turns_remaining=self.freeze_length,
+        )
+        self.equipment_message(attacker, f"{target.name} has been sensually chained to the ground for {self.freeze_length} turns.", target=target)
+
+class Brick(Weapon):
+    def __init__(self, power_addition=5):
+        super().__init__(power_addition=power_addition)
+
+class Broom(Weapon):
+    def __init__(self, power_addition=3, push_back_distance=2):
+        super().__init__(power_addition=power_addition)
+        self.push_back_distance = push_back_distance
+
+    def use_weapon(self, attacker: Actor, target: Actor) -> None:
+        a_x = attacker.x
+        a_y = attacker.y
+        t_x = target.x
+        t_y = target.y
+
+        dx = self.push_back_distance * (a_x - t_x)
+        dy = self.push_back_distance * (a_y - t_y)
+
+        while(True):
+            new_x = target.x + dx
+            new_y = target.y + dy
+            if (self.game_map.in_bounds(new_x, new_y)
+                and self.game_map.is_walkable(new_x, new_y) 
+                and self.game_map.get_actor_at_location(new_x, new_y) is None
+            ):
+                attacker.place(new_x, new_y)
+                self.equipment_message(attacker, f"{target.name} has been lightly swept back.", target=target)
+                break 
+            else:
+                dx = dx // 2
+                dy = dy // 2
+
+            if dx == 0 and dy == 0:
+                break
+
+"""
+Armor
+"""
+
+class LeatherArmor(Armor):
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.ARMOR, defense_addition=3)
+        super().__init__(defense_addition=1)
+
+class ChainMail(Armor):
+    def __init__(self) -> None:
+        super().__init__(defense_addition=3)
+

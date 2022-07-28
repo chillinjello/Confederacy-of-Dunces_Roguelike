@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from components.equippable import Equippable
     from components.buff_container import BuffContainer
     from game_map import GameMap
+    from engine import Engine
 
 T = TypeVar("T", bound="Entity")
 
@@ -56,7 +57,7 @@ class Entity:
 
     @property
     def engine(self) -> Engine:
-        return self.parent.game_map.engine
+        return self.game_map.engine
 
     def spawn(self: T, game_map: game_map, x: int, y: int) -> T:
         """Spawn a copy of this instance at the given location."""

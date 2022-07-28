@@ -69,7 +69,7 @@ class GameMap:
             if isinstance(entity, Actor) and entity.is_alive and entity.hostile == Actor.INANIMATE_ACTOR
         )
 
-    def actors_within_range(self, x, y, range, actors=None):
+    def actors_within_range(self, x, y, range, actors=None) -> Iterator[Actor]:
         if actors == None:
             actors = self.actors
 

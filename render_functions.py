@@ -28,7 +28,11 @@ def render_health_bar(
     )
 
 def render_valve_bar(
-    console: Console, valve_level: int, total_width: int
+    console: Console, 
+    valve_level: int, 
+    current_valve: int, 
+    max_valve: int,
+    total_width: int
 ):
     valve_string = ""
     valve_background_color = color.bar_empty
@@ -49,8 +53,13 @@ def render_valve_bar(
         valve_string = "100% Clear"
         valve_background_color = color.valve_bar_4
 
+    bar_width = 0
+    if (max_valve != 0):
+        bar_width = int(float(current_valve) / max_valve * total_width)
 
-    console.draw_rect(x=0, y=46, width=total_width, height=1, ch=1, bg=valve_background_color)
+    console.draw_rect(x=0, y=46, width=total_width, height=1, ch=1, bg=color.bar_empty)
+
+    console.draw_rect(x=0, y=46, width=bar_width, height=1, ch=1, bg=valve_background_color)
 
     console.print(
         x=1, y=46, string=f"Valve: {valve_string}", fg=color.bar_text

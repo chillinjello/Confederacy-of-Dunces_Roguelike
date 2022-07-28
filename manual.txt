@@ -85,7 +85,6 @@ Consumables:
         - Freeze Enemy for 20 turns
     - Dirty Cat:
         - Health Down, attack up
-        
     - Miss Trixie's Combo:
         - Trixie's Sandwich
             - Increase max health 1
@@ -101,7 +100,7 @@ Consumables:
 
     
 Weapon ideas:
-    - Plastic Cutlas:
+    - Plastic Scimitar:
         - 15 damage + bleed
     - Big Chief Tablet:
         - 10 damage + -5 defense per Hunting
@@ -109,10 +108,11 @@ Weapon ideas:
         - 15 damage + splash damage
     - Chains:
         - 20 damage.
-        - 5 uses. Each hit freezes enemy
+        - Each hit freezes enemy for 3 turns
     - Brick:
         - 25 damage.
     - Broom:
+        - push back the target 2 spaces
 
 Equipables:
     - Head:

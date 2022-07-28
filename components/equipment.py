@@ -109,3 +109,11 @@ class Equipment(BaseComponent):
             self.unequip_from_slot(slot, add_message)
         else:
             self.equip_to_slot(slot, equippable_item, add_message)
+
+    def use_weapon(self, attacker, target) -> None:
+        if (self.weapon is not None):
+            self.weapon.equippable.use_weapon(attacker, target)
+
+    def take_hit(self, attacker, target) -> None:
+        if (self.armor is not None):
+            self.weapon.equippable.take_hit(attacker, target)

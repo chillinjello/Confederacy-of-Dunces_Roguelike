@@ -184,6 +184,12 @@ class Fighter(BaseComponent):
 
         return amount_recovered
 
+    def max_out_health(self) -> None:
+        self.hp = self.base_max_hp
+
+    def max_out_valve(self) -> None:
+        self.valve = self.max_valve
+
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
 
