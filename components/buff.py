@@ -128,3 +128,37 @@ class BleedBuff(Buff):
             f"The {self.parent.parent.name} takes {self.damage} bleed damage.",
             color.player_atk 
         )
+
+class BleedBuff(Buff):
+    def __init__(
+        self,
+        *,
+        name: str = "[No Buff Name]",
+        defense_multiplier: int = 1,
+        defense_addition: int = 0,
+        power_multiplier: int = 1,
+        power_addition: int = 0,
+        max_health_addition: int = 0,
+        buff_time: int = -1,
+        time_expired_message: str = "",
+        damage: int = 1,
+    ):
+        super().__init__(
+            name = name,
+            defense_multiplier = defense_multiplier,
+            defense_addition = defense_addition,
+            power_multiplier = power_multiplier,
+            power_addition = power_addition,
+            max_heath_addition=max_health_addition,
+            buff_time = buff_time,
+            time_expired_message = time_expired_message,
+        )
+        self.damage = damage
+
+
+    def end_of_turn_affect(self):
+        self.parent.parent.fighter.take_damage(self.damage)
+        self.engine.message_log.add_message(
+            f"The {self.parent.parent.name} takes {self.damage} bleed damage.",
+            color.player_atk 
+        )

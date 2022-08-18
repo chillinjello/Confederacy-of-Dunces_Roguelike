@@ -220,11 +220,23 @@ broom = Item(
     ),
 )
 
-
-leather_armor = Item(
-    char="[", color=(139, 69, 19), name="Leather Armor", equippable=equippable.LeatherArmor()
+"""
+Head Armor
+"""
+earing = Item(
+    char="{", color=(139, 69, 19), name="Earing", equippable=equippable.Earing()
 )
 
-chain_mail = Item(
-    char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail()
+"""
+Body Armor
+"""
+trench_coat_and_scarf = Item(
+    char="[", color=(139, 69, 19), name="Trench Coat and Scarf", equippable=equippable.TrenchCoatAndScarf()
+)
+
+"""
+Misc Equipment
+"""
+HotDogCart = Item(
+    char="+", color=(139, 69, 19), name="Hot Dog Cart", equippable=equippable.HotDogCart()
 )

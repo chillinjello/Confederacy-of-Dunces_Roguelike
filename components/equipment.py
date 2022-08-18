@@ -12,9 +12,11 @@ if TYPE_CHECKING:
 class Equipment(BaseComponent):
     parent: Actor
 
-    def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None):
+    def __init__(self, weapon: Optional[Item] = None, head_armor: Optional[Item] = None, body_armor: Optional[Item] = None, misc_equipment: Optional[Item] = None):
         self.weapon = weapon
-        self.armor = armor
+        self.head_armor = head_armor
+        self.body_armor = body_armor
+        self.misc_equipment = misc_equipment
 
     @property
     def defense_multiplier(self):
@@ -23,8 +25,14 @@ class Equipment(BaseComponent):
         if self.weapon is not None and self.weapon.equippable is not None:
             bonus *= self.weapon.equippable.defense_multiplier
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus *= self.armor.equippable.defense_multiplier
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus *= self.head_armor.equippable.defense_multiplier
+
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus *= self.body_armor.equippable.defense_multiplier
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus *= self.misc_equipment.equippable.defense_multiplier
         
         return bonus
 
@@ -35,9 +43,15 @@ class Equipment(BaseComponent):
         if self.weapon is not None and self.weapon.equippable is not None:
             bonus += self.weapon.equippable.defense_addition
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.defense_addition
-        
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus += self.head_armor.equippable.defense_addition
+ 
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.defense_addition
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus += self.misc_equipment.equippable.defense_addition
+
         return bonus
 
     @property
@@ -47,9 +61,15 @@ class Equipment(BaseComponent):
         if self.weapon is not None and self.weapon.equippable is not None:
             bonus *= self.weapon.equippable.power_multiplier
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus *= self.armor.equippable.power_multiplier
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus *= self.head_armor.equippable.power_multiplier
         
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus *= self.body_armor.equippable.power_multiplier
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus *= self.misc_equipment.equippable.power_multiplier
+
         return bonus
     
     @property
@@ -59,13 +79,73 @@ class Equipment(BaseComponent):
         if self.weapon is not None and self.weapon.equippable is not None:
             bonus += self.weapon.equippable.power_addition
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.power_addition
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus += self.head_armor.equippable.power_addition
+ 
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.power_addition       
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus += self.misc_equipment.equippable.power_addition
+
+        return bonus
+
+    @property
+    def max_health_addition(self):
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.max_health_addition
+
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus += self.head_armor.equippable.max_health_addition
+ 
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.max_health_addition
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus += self.misc_equipment.equippable.max_health_addition
+
+        return bonus
+
+    @property
+    def miss_chance_addition(self):
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.miss_chance_addition
+
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus += self.head_armor.equippable.miss_chance_addition
+ 
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.miss_chance_addition
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus += self.misc_equipment.equippable.miss_chance_addition
+
+        return bonus
+
+    @property
+    def miss_chance_multiplier(self):
+        bonus = 1
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus *= self.weapon.equippable.miss_chance_multiplier
+
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus *= self.head_armor.equippable.miss_chance_multiplier
         
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus *= self.body_armor.equippable.miss_chance_multiplier
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus *= self.misc_equipment.equippable.miss_chance_multiplier
+
         return bonus
 
     def item_is_equipped(self, item: Item) -> bool:
-        return self.weapon == item or self.armor == item
+        return self.weapon == item or self.head_armor == item or self.body_armor == item or self.misc_equipment == item
 
     def unequip_message(self, item_name: str) -> None:
         self.parent.game_map.engine.message_log.add_message(
@@ -78,7 +158,7 @@ class Equipment(BaseComponent):
         )
 
     def equip_to_slot(self, slot: str, item: Item, add_message: bool) -> None:
-        current_item = getattr(self, slot)
+        current_item: Item = getattr(self, slot)
 
         if current_item is not None:
             self.unequip_from_slot(slot, add_message)
@@ -89,7 +169,7 @@ class Equipment(BaseComponent):
             self.equip_message(item.name)
 
     def unequip_from_slot(self, slot: str, add_message: bool) -> None:
-        current_item = getattr(self, slot)
+        current_item: Item = getattr(self, slot)
 
         if add_message:
             self.unequip_message(current_item.name)
@@ -97,23 +177,37 @@ class Equipment(BaseComponent):
         setattr(self, slot, None)
 
     def toggle_equip(self, equippable_item: Item, add_message: bool = True) -> None:
-        if (
-            equippable_item.equippable
-            and equippable_item.equippable.equipment_type == EquipmentType.WEAPON
-        ):
-            slot = "weapon"
-        else:
-            slot = "armor"
+        if (equippable_item.equippable):
+            if (equippable_item.equippable.equipment_type == EquipmentType.WEAPON):
+                slot = "weapon"
+            elif (equippable_item.equippable.equipment_type == EquipmentType.BODY_ARMOR):
+                slot = "body_armor"
+            elif (equippable_item.equippable.equipment_type == EquipmentType.HEAD_ARMOR):
+                slot = "head_armor"
+            else:
+                slot = "misc_equipment"
 
         if getattr(self, slot) == equippable_item:
             self.unequip_from_slot(slot, add_message)
         else:
             self.equip_to_slot(slot, equippable_item, add_message)
 
-    def use_weapon(self, attacker, target) -> None:
+    def attack(self, attacker, target) -> None:
         if (self.weapon is not None):
-            self.weapon.equippable.use_weapon(attacker, target)
+            self.weapon.equippable.attack(attacker, target)
+        if (self.body_armor is not None):
+            self.body_armor.equippable.attack(attacker, target)
+        if (self.head_armor is not None):
+            self.head_armor.equippable.attack(attacker, target)
+        if (self.misc_equipment is not None):
+            self.misc_equipment.equippable.attack(attacker, target)
 
     def take_hit(self, attacker, target) -> None:
-        if (self.armor is not None):
+        if (self.weapon is not None):
             self.weapon.equippable.take_hit(attacker, target)
+        if (self.body_armor is not None):
+            self.body_armor.equippable.take_hit(attacker, target)
+        if (self.head_armor is not None):
+            self.head_armor.equippable.take_hit(attacker, target)
+        if (self.misc_equipment is not None):
+            self.misc_equipment.equippable.take_hit(attacker, target)

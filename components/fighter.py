@@ -22,7 +22,8 @@ class Fighter(BaseComponent):
         base_power: int, 
         base_valve: int = 100,
         *,
-        is_player: bool = False
+        is_player: bool = False,
+        base_valve_resistance: float = 1.0,
     ):
         self.base_max_hp = hp
         self._hp = hp
@@ -30,6 +31,7 @@ class Fighter(BaseComponent):
         self.base_power = base_power
         self._valve = base_valve
         self.max_valve = base_valve
+        self.base_valve_resistance = base_valve_resistance
         self.is_player = is_player
 
     @property
@@ -47,6 +49,8 @@ class Fighter(BaseComponent):
         final_max_health = self.base_max_hp
         if self.parent.buff_container:
             final_max_health += self.parent.buff_container.max_health_addition
+        if self.parent.equipment:
+            final_max_health += self.parent.equipment.max_health_addition
         return final_max_health
 
     def increase_base_max_hp(self, value: int) -> None:
@@ -143,8 +147,20 @@ class Fighter(BaseComponent):
             return 0
 
     @property
+    def valve_resistance(self) -> float:
+        res = self.base_valve_resistance
+
+        return res
+
+    @property
     def miss_chance(self) -> int:
-        return self.valve_miss_chance
+        base = self.valve_miss_chance
+
+        if self.parent.equipment:
+            base *= self.parent.equipment.miss_chance_multiplier
+            base += self.parent.equipment.miss_chance_addition
+
+        return max(0, min(base, 1))
 
     def tick(self) -> None:
         if self._hp > self.max_hp:
@@ -194,5 +210,9 @@ class Fighter(BaseComponent):
         self.hp -= amount
 
         if self.is_player:
-            factor = 1 - 2 * abs(amount)/100
-            self.valve = int(self.valve * factor)
+            self.valve_take_damage(amount)
+    
+    def valve_take_damage(self, amount: int) -> None:
+        factor = 1 - 2 * abs(amount)/100
+        factor = factor * self.valve_resistance
+        self.valve = int(self.valve * factor)

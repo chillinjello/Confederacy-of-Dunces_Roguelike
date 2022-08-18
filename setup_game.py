@@ -78,12 +78,22 @@ def new_game() -> Engine:
         weapon.parent = player.inventory
         player.inventory.items.append(weapon)
 
-    leather_armor = copy.deepcopy(entity_factories.leather_armor)
+    earing = copy.deepcopy(entity_factories.earing)
+    earing.parent = player.inventory
 
-    leather_armor.parent = player.inventory
+    trench_coat_and_scarf = copy.deepcopy(entity_factories.trench_coat_and_scarf)
+    trench_coat_and_scarf.parent = player.inventory
 
-    player.inventory.items.append(leather_armor)
-    player.equipment.toggle_equip(leather_armor, add_message=False)
+    hot_dog_cart = copy.deepcopy(entity_factories.HotDogCart)
+    hot_dog_cart.parent = player.inventory
+
+    player.inventory.items.append(earing)
+    player.inventory.items.append(trench_coat_and_scarf)
+    player.inventory.items.append(hot_dog_cart)
+
+    player.equipment.toggle_equip(earing, add_message=False)
+    player.equipment.toggle_equip(trench_coat_and_scarf, add_message=False)
+    player.equipment.toggle_equip(hot_dog_cart, add_message=False)
 
     return engine
 

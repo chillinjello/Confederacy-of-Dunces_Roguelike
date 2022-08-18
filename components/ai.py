@@ -12,7 +12,6 @@ import tcod
 import pdb
 
 from actions import Action, MeleeAction, MovementAction, WaitAction, BumpAction
-
 from entity import Actor
 
 class BaseAI(Action):
@@ -69,7 +68,7 @@ class BaseAI(Action):
 
         return closest_actor
 
-    def update_fov(self, radius: int = 8):
+    def update_fov(self, radius: int = 8) -> None:
         self.fov = compute_fov(
             self.engine.game_map.tiles["transparent"],
             (self.entity.x, self.entity.y),
@@ -96,7 +95,11 @@ class HostileEnemy(BaseAI):
         dy = target.y - self.entity.y
         distance = max(abs(dx), abs(dy)) # Chebyshev distance.
 
-        if self.fov[self.entity.x, self.entity.y]:
+        # If your target is not the player, perform the action freely
+        # If your target IS the player, make sure you're in the fov, so you don't hit player off screen
+        if (self.current_target != self.engine.player
+            or self.engine.game_map.visible[self.engine.player.x, self.engine.player.y]
+        ):
             if distance <= 1:
                 return MeleeAction(self.entity, dx, dy).perform()
 
@@ -133,7 +136,11 @@ class AllyEnemy(BaseAI):
         dy = target.y - self.entity.y
         distance = max(abs(dx), abs(dy)) # Chebyshev distance.
 
-        if self.fov[self.entity.x, self.entity.y]:
+        # If your target is not the player, perform the action freely
+        # If your target IS the player, make sure you're in the fov, so you don't hit player off screen
+        if (self.current_target != self.engine.player
+            or self.engine.game_map.visible[self.engine.player.x, self.engine.player.y]
+        ):
             if distance <= 1:
                 return MeleeAction(self.entity, dx, dy).perform()
 

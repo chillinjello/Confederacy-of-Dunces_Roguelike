@@ -577,7 +577,7 @@ class BowlingBall(Consumable):
             line_length += 1
             
             
-        if (len(coords) <= 1):
+        if (len(coords) <= 0):
             raise Impossible("You cannot target yourself.")
 
         # get rid of the first entry

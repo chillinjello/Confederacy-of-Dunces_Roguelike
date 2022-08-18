@@ -1,3 +1,5 @@
+TODO: add valve resistance to buff and equipment
+add miss chance to buffs.
 
 Maybe some mechanic where you have to manage your valve:
     Valve Status: Fully closed, Partially closed, halfway open, nearly open, 100% clear
@@ -103,7 +105,7 @@ Weapon ideas:
     - Plastic Scimitar:
         - 15 damage + bleed
     - Big Chief Tablet:
-        - 10 damage + -5 defense per Hunting
+        - 10 damage + -5 defense per hit
     - Lute:
         - 15 damage + splash damage
     - Chains:
@@ -117,22 +119,39 @@ Weapon ideas:
 Equipables:
     - Head:
         - Earing
+            - Attacks have a chance to confuse
         - Hunting Cap
+            - Defense up, keeps valve in check
         - Black Sunglasses 
+            - Less FOV, higher damage
+        - Massage Board
+            - Defense up 4
 
     - Body:
         - Santa outfit
+            - Defense up 3
         - Trench coat and scarf
+            - Defense up 1
+            - Keeps valve in check
         - Police Uniform
+            - Miss chance up, Defense up 5
+        - Trixie's pajamas
+            - Attack up
+            - Miss chance up
+        - 
 
-    - Misc.:
-        - Box of Porno
-        - Yellow Cockatoo
-        - Letter from the minx
-        - A picture of Rex
-        - Police Motorcycle
-        - Letter to Mr. Abelman
-        - Massage Board
+    - Misc:
         - Hot dog cart
-        - "12in of pleasure" Sign
+            - Defense up, attack up
         - Picture of Santa's mom
+            - Defense up, attack down
+        - Box of Porno
+            - Raise defense, lower health
+        - Yellow Cockatoo
+            - Enemies in a 5x5 range take 1 damage per turn
+        - Letter from the minx
+            - Your attack is increased by 3
+        - A picture of Rex
+            - Higher miss chance, stats up 5
+        - Letter to Mr. Abelman
+            - No miss chance
