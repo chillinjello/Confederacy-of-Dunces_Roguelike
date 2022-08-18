@@ -26,8 +26,10 @@ class Equippable(BaseComponent):
         defense_multiplier: int = 1,
         defense_addition: int = 0,
         max_health_addition: int = 0,
-        miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_addition: float = 0,
+        miss_chance_multiplier: float = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         self.equipment_type = equipment_type
 
@@ -41,6 +43,9 @@ class Equippable(BaseComponent):
 
         self.miss_chance_addition = miss_chance_addition
         self.miss_chance_multiplier = miss_chance_multiplier
+
+        self.valve_resistance_addition = valve_resistance_addition
+        self.valve_resistance_multiplier = valve_resistance_multiplier
 
     def equipment_message(self, attacker: Actor, message, *, target: Actor = None) -> None:
         if target is not None and not target.is_alive:
@@ -71,8 +76,8 @@ class Weapon(Equippable):
         defense_multiplier: int = 1, 
         defense_addition: int = 0,
         max_health_addition: int = 0,
-        miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_addition: float = 0,
+        miss_chance_multiplier: float = 1,
     ):
         equipment_type=EquipmentType.WEAPON
         super().__init__(
@@ -96,7 +101,7 @@ class Armor(Equippable):
         defense_addition: int = 0,
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_multiplier: int = 1,
     ):
         equipment_type=armor_type
         super().__init__(
@@ -115,11 +120,11 @@ class HeadArmor(Armor):
         self, 
         power_multiplier: int = 1, 
         power_addition: int = 0, 
-        defense_multiplier: int = 1, 
+        defense_multiplier: int = 1,
         defense_addition: int = 0,
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_multiplier: int = 1,
     ):
         super().__init__(
             EquipmentType.HEAD_ARMOR, 
@@ -141,7 +146,7 @@ class BodyArmor(Armor):
         defense_addition: int = 0,
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_multiplier: int = 1,
     ):
         super().__init__(
             EquipmentType.BODY_ARMOR, 
@@ -163,7 +168,7 @@ class MiscEquipment(Armor):
         defense_addition: int = 0,
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
-        miss_chance_multiplier: int = 0,
+        miss_chance_multiplier: int = 1,
     ):
         super().__init__(
             EquipmentType.MISC, 
@@ -234,12 +239,13 @@ class Chains(Weapon):
         self.freeze_length = freeze_length
 
     def attack(self, attacker: Actor, target: Actor) -> None:
-        target.ai = FrozenEnemy(
-            entity=target,
-            previous_ai=target.ai,
-            turns_remaining=self.freeze_length,
-        )
-        self.equipment_message(attacker, f"{target.name} has been sensually chained to the ground for {self.freeze_length} turns.", target=target)
+        if target.ai != None:
+            target.ai = FrozenEnemy(
+                entity=target,
+                previous_ai=target.ai,
+                turns_remaining=self.freeze_length,
+            )
+            self.equipment_message(attacker, f"{target.name} has been sensually chained to the ground for {self.freeze_length} turns.", target=target)
 
 class Brick(Weapon):
     def __init__(self, power_addition=5):
@@ -282,7 +288,7 @@ Head Armor
 """
 
 class Earing(HeadArmor):
-    def __init__(self, confusion_chance: float = 0.5, confusion_time: int = 5, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
+    def __init__(self, confusion_chance: float = 0.1, confusion_time: int = 5, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
         super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
         self.confusion_chance = confusion_chance
         self.confusion_time = confusion_time
@@ -290,11 +296,11 @@ class Earing(HeadArmor):
     def attack(self, attacker, target):
         rnd = random.uniform(0,1)
         # roll confuse enemy
-        if (rnd > self.confusion_chance):
+        if (rnd > self.confusion_chance and target.ai != None):
             target.ai = ConfusedEnemy(
                 entity=target, previous_ai=target.ai, turns_remaining=self.confusion_time
             )
-            self.equipment_message(attacker, f"The {attacker.name}'s radical earning confused the {target.name} for {self.confusion_time} turn(s).", target=target)
+            self.equipment_message(attacker, f"The {attacker.name}'s radical earing confused the {target.name} for {self.confusion_time} turn(s).", target=target)
 
 class HuntingCap(HeadArmor):
     def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):

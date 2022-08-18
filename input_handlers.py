@@ -16,6 +16,8 @@ from actions import (
     PickupAction,
 )
 import color
+from components.buff import Buff
+from components.equipment import Equipment
 import exceptions
 
 if TYPE_CHECKING:
@@ -125,6 +127,10 @@ class EventHandler(BaseEventHandler):
         # end of the turn actions for all actors
         for entity in set(self.engine.game_map.actors):
             entity.tick()
+
+        # Reset enemy just hits
+        for entity in set(self.engine.game_map.actors):
+            entity.fighter.reset_just_hit()
 
         self.engine.update_fov()
         return True
@@ -630,6 +636,133 @@ class LevelUpEventHandler(AskUserEventHandler):
 class CharacterScreenEventHandler(AskUserEventHandler):
     TITLE = "Character Information"
 
+    def display_equipment(self, console: tcod.Console, equipment: Equipment, current_line: int, x: int, name: str) -> int:
+        if (equipment):
+            console.print(
+                x=x + 1, y=current_line, string=f"{name}: {equipment.parent.name}"
+            )
+            current_line += 1
+            attack_p = f"Attack (+): {equipment.power_addition}" if equipment.power_addition != 0 else ""
+            if attack_p != "":
+                console.print(
+                    x=x + 3, y=current_line, string=attack_p
+                )
+                current_line += 1
+            attack_mult = f"Attack (%): {equipment.power_multiplier * 100}" if equipment.power_multiplier != 1 else ""
+            if attack_mult != "":
+                console.print(
+                    x=x + 3, y=current_line, string=attack_mult
+                )
+                current_line += 1
+            defense_p = f"Defense (+): {equipment.defense_addition}" if equipment.defense_addition != 0 else ""
+            if defense_p != "":
+                console.print(
+                    x=x + 3, y=current_line, string=defense_p
+                )
+                current_line += 1
+            defense_mult = f"Defense (%): {equipment.defense_multiplier * 100}" if equipment.defense_multiplier != 1 else ""
+            if defense_mult != "":
+                console.print(
+                    x=x + 3, y=current_line, string=defense_mult
+                )
+                current_line += 1
+            miss_chance_p = f"Miss Chance (+): {equipment.miss_chance_addition}" if equipment.miss_chance_addition != 0 else ""
+            if miss_chance_p != "":
+                console.print(
+                    x=x + 3, y=current_line, string=miss_chance_p
+                )
+                current_line += 1
+            miss_chance_mult = f"Miss Chance (%): {equipment.miss_chance_multiplier * 100}" if equipment.miss_chance_multiplier != 1 else ""
+            if miss_chance_mult != "":
+                console.print(
+                    x=x + 3, y=current_line, string=miss_chance_mult
+                )
+                current_line += 1
+            valve_resistance_p = f"Valve Resistance (+): {equipment.valve_resistance_addition}" if equipment.valve_resistance_addition != 0 else ""
+            if valve_resistance_p != "":
+                console.print(
+                    x=x + 3, y=current_line, string=valve_resistance_p
+                )
+                current_line += 1
+            valve_resistance_mult = f"Valve Resistance (%): {equipment.valve_resistance_multiplier * 100}" if equipment.valve_resistance_multiplier != 1 else ""
+            if valve_resistance_mult != "":
+                console.print(
+                    x=x + 3, y=current_line, string=valve_resistance_mult
+                )
+                current_line += 1
+            max_health_p = f"Max Health (+): {equipment.max_health_addition}" if equipment.max_health_addition != 0 else ""
+            if max_health_p != "":
+                console.print(
+                    x=x + 3, y=current_line, string=max_health_p
+                )
+                current_line += 1
+        else:
+            console.print(
+                x=x + 1, y=current_line, string=f"{name}: None"
+            )
+        return current_line
+
+    def display_buff(self, console: tcod.Console, buff: Buff, current_line: int, x: int) -> int:
+        console.print(
+            x=x + 1, y=current_line, string=f"{buff.parent.name}"
+        )
+        current_line += 1
+        attack_p = f"Attack (+): {buff.power_addition}" if buff.power_addition != 0 else ""
+        if attack_p != "":
+            console.print(
+                x=x + 3, y=current_line, string=attack_p
+            )
+            current_line += 1
+        attack_mult = f"Attack (%): {buff.power_multiplier * 100}" if buff.power_multiplier != 1 else ""
+        if attack_mult != "":
+            console.print(
+                x=x + 3, y=current_line, string=attack_mult
+            )
+            current_line += 1
+        defense_p = f"Defense (+): {buff.defense_addition}" if buff.defense_addition != 0 else ""
+        if defense_p != "":
+            console.print(
+                x=x + 3, y=current_line, string=defense_p
+            )
+            current_line += 1
+        defense_mult = f"Defense (%): {buff.defense_multiplier * 100}" if buff.defense_multiplier != 1 else ""
+        if defense_mult != "":
+            console.print(
+                x=x + 3, y=current_line, string=defense_mult
+            )
+            current_line += 1
+        miss_chance_p = f"Miss Chance (+): {buff.miss_chance_addition}" if buff.miss_chance_addition != 0 else ""
+        if miss_chance_p != "":
+            console.print(
+                x=x + 3, y=current_line, string=miss_chance_p
+            )
+            current_line += 1
+        miss_chance_mult = f"Miss Chance (%): {buff.miss_chance_multiplier * 100}" if buff.miss_chance_multiplier != 1 else ""
+        if miss_chance_mult != "":
+            console.print(
+                x=x + 3, y=current_line, string=miss_chance_mult
+            )
+            current_line += 1
+        valve_resistance_p = f"Valve Resistance (+): {buff.valve_resistance_addition}" if buff.valve_resistance_addition != 0 else ""
+        if valve_resistance_p != "":
+            console.print(
+                x=x + 3, y=current_line, string=valve_resistance_p
+            )
+            current_line += 1
+        valve_resistance_mult = f"Valve Resistance (%): {buff.valve_resistance_multiplier * 100}" if buff.valve_resistance_multiplier != 1 else ""
+        if valve_resistance_mult != "":
+            console.print(
+                x=x + 3, y=current_line, string=valve_resistance_mult
+            )
+            current_line += 1
+        max_health_p = f"Max Health (+): {buff.max_health_addition}" if buff.max_health_addition != 0 else ""
+        if max_health_p != "":
+            console.print(
+                x=x + 3, y=current_line, string=max_health_p
+            )
+            current_line += 1
+        return current_line
+
     def on_render(self, console: tcod.Console) -> None:
         super().on_render(console)
 
@@ -640,13 +773,13 @@ class CharacterScreenEventHandler(AskUserEventHandler):
 
         y = 0
 
-        width = len(self.TITLE) + 4
+        width = len(self.TITLE) + 15
 
         console.draw_frame(
             x=x,
             y=y,
             width=width,
-            height=7,
+            height=9,
             title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
@@ -662,7 +795,7 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(
             x=x + 1, 
             y=y + 3, 
-            string=f"XP for next Level: {self.engine.player.level.current_level}"
+            string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}"
         )
         console.print(
             x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.power}"
@@ -670,3 +803,39 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(
             x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}"
         )
+        console.print(
+            x=x + 1, y=y + 6, string=f"Miss Chance: {self.engine.player.fighter.miss_chance}%"
+        )
+        console.print(
+            x=x + 1, y=y + 7, string=f"Valve Resistance: {self.engine.player.fighter.valve_resistance}"
+        )
+
+        # Print current items
+        console.print(
+            x=x + 1, y=y + 9, string=f"---Inventory---"
+        )
+
+        current_line = y + 10
+        # Head
+        current_line = self.display_equipment(console, self.engine.player.equipment.head_armor.equippable, current_line, x, "Head")
+
+        # Body
+        current_line = self.display_equipment(console, self.engine.player.equipment.body_armor.equippable, current_line, x, "Body")
+
+        # Misc
+        current_line = self.display_equipment(console, self.engine.player.equipment.misc_equipment.equippable, current_line, x, "Misc")
+
+        # Print Buffs
+        current_line += 1
+        console.print(
+            x=x + 1, y=current_line, string=f"---Buffs---"
+        )
+        current_line += 1
+        if len(self.engine.player.buff_container.buff_list) > 0:
+            console.print(
+                x=x + 1, y=current_line, string="None"
+            )
+            current_line += 1
+        else:
+            for buff in self.engine.player.buff_container.buff_list:
+                current_line = self.display_buff(console, buff, current_line, x)

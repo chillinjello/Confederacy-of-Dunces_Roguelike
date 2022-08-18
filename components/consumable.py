@@ -68,7 +68,9 @@ class ConfusionConsumable(Consumable):
             raise Impossible("You must select an enemy to target.")
         if target is consumer:
             raise Impossible("You cannot confuse yourself!")
-        
+        if target.ai == None:
+            raise Impossible("Object has no AI!")
+
         self.engine.message_log.add_message(
             f"The eyes of the {target.name} look vacant, as it starts to stumble around!",
             color.status_effect_applied
@@ -290,6 +292,7 @@ class JazzRecord(Consumable):
             range=10,
             actors=self.game_map.hostile_actors,
         )
+        enemies_in_range = filter(lambda enemy: enemy.is_alive, enemies_in_range)
 
         if len(enemies_in_range) == 0:
             raise Impossible(f"There's no one around to be hear your hip jazz music.")
@@ -625,7 +628,7 @@ class OvenWine(Consumable):
 
         targets_hit = False
         for actor in self.engine.game_map.actors:
-            if actor is self.engine.player:
+            if actor is self.engine.player or actor.ai == None:
                 continue
             if actor.distance(*target_xy) <= self.diameter/2:
                 self.engine.message_log.add_message(
@@ -673,7 +676,9 @@ class NudePostcard(Consumable):
             raise Impossible("You aren't interested in this filth!")
         if target.distance(consumer.x, consumer.y) > self.max_range:
             raise Impossible("Enemy out of range!")
-
+        if target.ai == None:
+            raise Impossible("Enemy is too stupid to be corrupted!")
+            
         self.engine.message_log.add_message(
             f"The {target.name} has been corrupted, though it was inevitable!",
             color.status_effect_applied

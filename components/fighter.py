@@ -33,6 +33,13 @@ class Fighter(BaseComponent):
         self.max_valve = base_valve
         self.base_valve_resistance = base_valve_resistance
         self.is_player = is_player
+        # We want to track that enemies just hit by player don't attack 
+        self.just_hit = False
+
+
+
+    def reset_just_hit(self) -> None:
+        self.just_hit = False
 
     @property
     def hp(self) -> int:
@@ -133,7 +140,7 @@ class Fighter(BaseComponent):
         return int(addition * multiplication)
 
     @property
-    def valve_miss_chance(self) -> int:
+    def valve_miss_chance(self) -> float:
         valve_level = self.valve_level
         if valve_level == 0:
             return 0.6
@@ -148,18 +155,29 @@ class Fighter(BaseComponent):
 
     @property
     def valve_resistance(self) -> float:
-        res = self.base_valve_resistance
+        addition, multiplication = 0, 1
+        if self.parent.equipment:
+            multiplication *= self.parent.equipment.valve_resistance_multiplier
+            addition += self.parent.equipment.valve_resistance_addition
 
-        return res
+        if self.parent.buff_container:
+            multiplication *= self.parent.buff_container.valve_resistance_multiplier
+            addition += self.parent.buff_container.valve_resistance_addition
+
+        return (self.base_valve_resistance + addition) * multiplication
 
     @property
-    def miss_chance(self) -> int:
-        base = self.valve_miss_chance
-
+    def miss_chance(self) -> float:
+        addition, multiplication = 0, 1
         if self.parent.equipment:
-            base *= self.parent.equipment.miss_chance_multiplier
-            base += self.parent.equipment.miss_chance_addition
+            multiplication *= self.parent.equipment.miss_chance_multiplier
+            addition += self.parent.equipment.miss_chance_addition
 
+        if self.parent.buff_container:
+            multiplication *= self.parent.buff_container.miss_chance_multiplication
+            addition += self.parent.buff_container.miss_chance_addition
+
+        base = (self.valve_miss_chance + addition) * multiplication
         return max(0, min(base, 1))
 
     def tick(self) -> None:
@@ -211,6 +229,8 @@ class Fighter(BaseComponent):
 
         if self.is_player:
             self.valve_take_damage(amount)
+        else:
+            self.just_hit = True
     
     def valve_take_damage(self, amount: int) -> None:
         factor = 1 - 2 * abs(amount)/100

@@ -144,6 +144,42 @@ class Equipment(BaseComponent):
 
         return bonus
 
+    @property
+    def valve_resistance_addition(self):
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus *= self.weapon.equippable.valve_resistance_addition
+
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus *= self.head_armor.equippable.valve_resistance_addition
+        
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus *= self.body_armor.equippable.valve_resistance_addition
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus *= self.misc_equipment.equippable.valve_resistance_addition
+
+        return bonus
+
+    @property
+    def valve_resistance_multiplier(self):
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus *= self.weapon.equippable.valve_resistance_multiplier
+
+        if self.head_armor is not None and self.head_armor.equippable is not None:
+            bonus *= self.head_armor.equippable.valve_resistance_multiplier
+        
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus *= self.body_armor.equippable.valve_resistance_multiplier
+
+        if self.misc_equipment is not None and self.misc_equipment.equippable is not None:
+            bonus *= self.misc_equipment.equippable.valve_resistance_multiplier
+
+        return bonus
+
     def item_is_equipped(self, item: Item) -> bool:
         return self.weapon == item or self.head_armor == item or self.body_armor == item or self.misc_equipment == item
 

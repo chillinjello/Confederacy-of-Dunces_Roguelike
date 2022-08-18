@@ -82,6 +82,11 @@ class HostileEnemy(BaseAI):
         self.path: List[Tuple[int, int]] = []
 
     def perform(self) -> None:
+        # Check to make sure the entity isn't already dead
+        if not self.entity.is_alive:
+            self.entity.ai = None
+            return
+
         self.update_fov()
 
         if self.current_target == None or not self.current_target.is_alive:
@@ -123,6 +128,11 @@ class AllyEnemy(BaseAI):
         self.entity.name = "Friendly " + self.entity.name
 
     def perform(self) -> None:
+        # Check to make sure the entity isn't already dead
+        if not self.entity.is_alive:
+            self.entity.ai = None
+            return
+
         self.update_fov()
 
         if self.current_target == None or not self.current_target.is_alive:
@@ -175,6 +185,10 @@ class FrozenEnemy(BaseAI):
         self.turns_remaining = turns_remaining
 
     def perform(self) -> None:
+        # Check to make sure the entity isn't already dead
+        if not self.entity.is_alive:
+            self.entity.ai = None
+            return
         # Revert the AI back to the original state if the effect has run its course.
         if self.turns_remaining == 0:
             self.engine.message_log.add_message(
@@ -201,6 +215,10 @@ class ConfusedEnemy(BaseAI):
         self.turns_remaining = turns_remaining
 
     def perform(self) -> None:
+        # Check to make sure the entity isn't already dead
+        if not self.entity.is_alive:
+            self.entity.ai = None
+            return
         # Revert the AI back to the original state if the effect has run its course.
         if self.turns_remaining <= 0:
             self.engine.message_log.add_message(

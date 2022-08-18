@@ -1,6 +1,3 @@
-TODO: add valve resistance to buff and equipment
-add miss chance to buffs.
-
 Maybe some mechanic where you have to manage your valve:
     Valve Status: Fully closed, Partially closed, halfway open, nearly open, 100% clear
 

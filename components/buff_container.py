@@ -1,13 +1,14 @@
+from typing import Iterable
+
 from entity import Actor
 
-# from components.buff import Buff
 from components.base_component import BaseComponent
 
 class BuffContainer(BaseComponent):
     parent: Actor
 
     def __init__(self):
-        self.buff_list = []
+        self.buff_list: Iterable[BaseComponent] = []
 
     def add_buff(self, buff: BaseComponent):
         buff.parent = self
@@ -49,8 +50,36 @@ class BuffContainer(BaseComponent):
         return total_defense_addition
 
     @property
+    def miss_chance_addition(self):
+        total_miss_chance_addition = 0
+        for buff in self.buff_list:
+            total_miss_chance_addition += buff.miss_chance_addition
+        return total_miss_chance_addition
+
+    @property
+    def miss_chance_multiplication(self):
+        total_miss_chance_mult = 1
+        for buff in self.buff_list:
+            total_miss_chance_mult *= buff.miss_chance_multiplier
+        return total_miss_chance_mult
+
+    @property
     def max_health_addition(self):
         total_max_health_addition = 0
         for buff in self.buff_list:
             total_max_health_addition += buff.max_health_addition
         return total_max_health_addition
+
+    @property
+    def valve_resistance_multiplier(self):
+        total_valve_resistance_mult = 1
+        for buff in self.buff_list:
+            total_valve_resistance_mult *= buff.valve_resistance_multiplier
+        return total_valve_resistance_mult
+
+    @property
+    def valve_resistance_addition(self):
+        total_valve_resistance_addition = 0
+        for buff in self.buff_list:
+            total_valve_resistance_addition *= buff.valve_resistance_addition
+        return total_valve_resistance_addition

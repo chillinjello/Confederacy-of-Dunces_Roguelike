@@ -13,6 +13,10 @@ class Buff(BaseComponent):
         defense_addition: int = 0,
         power_multiplier: int = 1,
         power_addition: int = 0,
+        miss_chance_addition: float = 0,
+        miss_chance_multiplier: float = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
         max_heath_addition: int = 0,
         buff_time: int = -1,
         time_expired_message: str = "",
@@ -24,6 +28,12 @@ class Buff(BaseComponent):
         
         self.power_multiplier = power_multiplier
         self.power_addition = power_addition
+
+        self.miss_chance_addition = miss_chance_addition
+        self.miss_chance_multiplier = miss_chance_multiplier
+
+        self.valve_resistance_addition = valve_resistance_addition
+        self.valve_resistance_multiplier = valve_resistance_multiplier
 
         self.max_health_addition = max_heath_addition
 

@@ -26,7 +26,7 @@ class Engine:
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
-            if entity.ai:
+            if entity.ai and not entity.fighter.just_hit:
                 try:
                     entity.ai.perform()
                 except:
