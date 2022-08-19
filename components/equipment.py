@@ -164,7 +164,7 @@ class Equipment(BaseComponent):
 
     @property
     def valve_resistance_multiplier(self):
-        bonus = 0
+        bonus = 1
 
         if self.weapon is not None and self.weapon.equippable is not None:
             bonus *= self.weapon.equippable.valve_resistance_multiplier
@@ -225,8 +225,10 @@ class Equipment(BaseComponent):
 
         if getattr(self, slot) == equippable_item:
             self.unequip_from_slot(slot, add_message)
+            equippable_item.equippable.trigger_unequip()
         else:
             self.equip_to_slot(slot, equippable_item, add_message)
+            equippable_item.equippable.trigger_equip()
 
     def attack(self, attacker, target) -> None:
         if (self.weapon is not None):

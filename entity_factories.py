@@ -13,7 +13,7 @@ player = Actor(
     name="Player", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=30, base_defense=2, base_power=5, base_valve=100, is_player=True),
+    fighter=Fighter(hp=10, base_defense=0, base_power=2, base_valve=100, is_player=True),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(level_up_base=200),
@@ -26,7 +26,7 @@ orc = Actor(
     name="Orc", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=10, base_defense=0, base_power=5),
+    fighter=Fighter(hp=3, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=35),
@@ -38,7 +38,7 @@ troll = Actor(
     name="Troll", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=16, base_defense=1, base_power=6),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=100),
@@ -224,19 +224,134 @@ broom = Item(
 Head Armor
 """
 earing = Item(
-    char="{", color=(139, 69, 19), name="Earing", equippable=equippable.Earing()
+    char="{", 
+    color=(139, 69, 19), 
+    name="Earing", 
+    equippable=equippable.Earing()
+)
+hunting_cap = Item(
+    char="{", 
+    color=(139, 69, 19), 
+    name="Hunting Cap", 
+    equippable=equippable.HuntingCap(
+        valve_resistance_multiplier=1.5
+    )
+)
+black_sunglasses = Item(
+    char="{", 
+    color=(139, 69, 19), 
+    name="Black Sunglasses", 
+    equippable=equippable.BlackSunglasses(
+        power_addition=2
+    )
+)
+massage_board = Item(
+    char="{", 
+    color=(139, 69, 19), 
+    name="Massage Board", 
+    equippable=equippable.MassageBoard(
+        defense_addition=2
+    )
 )
 
 """
 Body Armor
 """
+santa_outfit = Item(
+    char="[",
+    color=(139, 69, 19),
+    name="Santa Outfit",
+    equippable=equippable.SantaOutfit(
+        defense_addition=3,
+    )
+)
 trench_coat_and_scarf = Item(
-    char="[", color=(139, 69, 19), name="Trench Coat and Scarf", equippable=equippable.TrenchCoatAndScarf()
+    char="[", 
+    color=(139, 69, 19), 
+    name="Trench Coat and Scarf", 
+    equippable=equippable.TrenchCoatAndScarf(
+        defense_addition=2,
+        valve_resistance_multiplier=1.5
+    )
+)
+police_uniform = Item(
+    char="[",
+    color=(139, 69, 19), 
+    name="Police Uniform",
+    equippable=equippable.PoliceUniform(
+        defense_addition=2,
+        miss_chance_addition=-0.5,
+    )
+)
+trixies_pajamas = Item(
+    char="[",
+    color=(139, 69, 19),
+    name="Trixies' Pajamas",
+    equippable=equippable.TrixiesPajamas(
+        power_addition=2,
+        miss_chance_addition=-0.5,
+    )
 )
 
 """
 Misc Equipment
 """
-HotDogCart = Item(
-    char="+", color=(139, 69, 19), name="Hot Dog Cart", equippable=equippable.HotDogCart()
+hot_dog_cart = Item(
+    char="+", 
+    color=(139, 69, 19), 
+    name="Hot Dog Cart", 
+    equippable=equippable.HotDogCart()
+)
+picture_of_santas_mom = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="Picture Of Santas Mom",
+    equippable=equippable.PictureOfSantasMom(
+        defense_addition=3,
+        power_addition=-2,
+    )
+)
+box_of_porno = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="Box of Porno",
+    equippable=equippable.BoxOfPorno(
+        defense_addition=2,
+        max_health_addition=-5,
+    )
+)
+letter_from_the_minx = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="Letter From the Minx",
+    equippable=equippable.LetterFromTheMinx(
+        power_addition=3
+    )
+)
+yellow_cockatoo = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="Yellow Cockatoo",
+    equippable=equippable.YellowCockatoo(
+        damage=1,
+        radius=5,
+    )
+)
+a_picture_of_rex = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="A Picture of Rex",
+    equippable=equippable.APictureOfRex(
+        miss_chance_addition=0.5,
+        power_addition=3,
+        defense_addition=3,
+    )
+)
+letter_to_mr_abelman = Item(
+    char="+",
+    color=(139, 69, 19),
+    name="Letter To Mr. Abelman",
+    equippable=equippable.LetterToMrAbelman(
+        miss_chance_multiplier=0.0
+    )
 )

@@ -78,22 +78,38 @@ def new_game() -> Engine:
         weapon.parent = player.inventory
         player.inventory.items.append(weapon)
 
-    earing = copy.deepcopy(entity_factories.earing)
-    earing.parent = player.inventory
+    # test body armor
+    test_heads = []
+    test_heads.append(copy.deepcopy(entity_factories.earing))
+    test_heads.append(copy.deepcopy(entity_factories.hunting_cap))
+    test_heads.append(copy.deepcopy(entity_factories.black_sunglasses))
+    test_heads.append(copy.deepcopy(entity_factories.massage_board))
+    for head in test_heads:
+        head.parent = player.inventory
+        player.inventory.items.append(head)
 
-    trench_coat_and_scarf = copy.deepcopy(entity_factories.trench_coat_and_scarf)
-    trench_coat_and_scarf.parent = player.inventory
+    # test body armor
+    test_body = []
+    test_body.append(copy.deepcopy(entity_factories.santa_outfit))
+    test_body.append(copy.deepcopy(entity_factories.trench_coat_and_scarf))
+    test_body.append(copy.deepcopy(entity_factories.police_uniform))
+    test_body.append(copy.deepcopy(entity_factories.trixies_pajamas))
+    for body in test_body:
+        body.parent = player.inventory
+        player.inventory.items.append(body)
 
-    hot_dog_cart = copy.deepcopy(entity_factories.HotDogCart)
-    hot_dog_cart.parent = player.inventory
-
-    player.inventory.items.append(earing)
-    player.inventory.items.append(trench_coat_and_scarf)
-    player.inventory.items.append(hot_dog_cart)
-
-    player.equipment.toggle_equip(earing, add_message=False)
-    player.equipment.toggle_equip(trench_coat_and_scarf, add_message=False)
-    player.equipment.toggle_equip(hot_dog_cart, add_message=False)
+    # test misc armor
+    test_misc = []
+    test_misc.append(copy.deepcopy(entity_factories.hot_dog_cart))
+    test_misc.append(copy.deepcopy(entity_factories.picture_of_santas_mom))
+    test_misc.append(copy.deepcopy(entity_factories.box_of_porno))
+    test_misc.append(copy.deepcopy(entity_factories.letter_from_the_minx))
+    test_misc.append(copy.deepcopy(entity_factories.yellow_cockatoo))
+    test_misc.append(copy.deepcopy(entity_factories.a_picture_of_rex))
+    test_misc.append(copy.deepcopy(entity_factories.a_picture_of_rex))
+    for misc in test_misc:
+        misc.parent = player.inventory
+        player.inventory.items.append(misc)
 
     return engine
 

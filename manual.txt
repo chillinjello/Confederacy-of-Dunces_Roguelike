@@ -1,6 +1,3 @@
-Maybe some mechanic where you have to manage your valve:
-    Valve Status: Fully closed, Partially closed, halfway open, nearly open, 100% clear
-
 The second room placed should be the boss room to insure that the room is placed at all.
 
 Make numbers really small so that damage and things are more significant
@@ -145,7 +142,7 @@ Equipables:
         - Box of Porno
             - Raise defense, lower health
         - Yellow Cockatoo
-            - Enemies in a 5x5 range take 1 damage per turn
+            - Enemies in a 5x5 range take 1 damage each time you attack 
         - Letter from the minx
             - Your attack is increased by 3
         - A picture of Rex

@@ -55,6 +55,8 @@ def main() -> None:
         except SystemExit:  # Save and quit.
             save_game(handler, "savegame.sav")
             raise
+        except AssertionError as msg:
+            print(msg)
         except BaseException:  # Save on any other unexpected exception.
             save_game(handler, "savegame.sav")
             raise

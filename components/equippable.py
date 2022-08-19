@@ -68,6 +68,12 @@ class Equippable(BaseComponent):
     def take_hit(self, attacker, target):
         pass
 
+    def trigger_unequip(self):
+        pass
+
+    def trigger_equip(self):
+        pass
+
 class Weapon(Equippable):
     def __init__(
         self, 
@@ -78,6 +84,8 @@ class Weapon(Equippable):
         max_health_addition: int = 0,
         miss_chance_addition: float = 0,
         miss_chance_multiplier: float = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         equipment_type=EquipmentType.WEAPON
         super().__init__(
@@ -88,7 +96,9 @@ class Weapon(Equippable):
             defense_addition,
             max_health_addition,
             miss_chance_addition,
-            miss_chance_multiplier
+            miss_chance_multiplier,
+            valve_resistance_addition,
+            valve_resistance_multiplier,
         )
 
 class Armor(Equippable):
@@ -102,6 +112,8 @@ class Armor(Equippable):
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
         miss_chance_multiplier: int = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         equipment_type=armor_type
         super().__init__(
@@ -112,7 +124,9 @@ class Armor(Equippable):
             defense_addition,
             max_health_addition,
             miss_chance_addition,
-            miss_chance_multiplier
+            miss_chance_multiplier,
+            valve_resistance_addition,
+            valve_resistance_multiplier,
         )
 
 class HeadArmor(Armor):
@@ -125,6 +139,8 @@ class HeadArmor(Armor):
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
         miss_chance_multiplier: int = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         super().__init__(
             EquipmentType.HEAD_ARMOR, 
@@ -134,7 +150,9 @@ class HeadArmor(Armor):
             defense_addition,
             max_health_addition,
             miss_chance_addition,
-            miss_chance_multiplier
+            miss_chance_multiplier,
+            valve_resistance_addition,
+            valve_resistance_multiplier,
         )
 
 class BodyArmor(Armor):
@@ -147,6 +165,8 @@ class BodyArmor(Armor):
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
         miss_chance_multiplier: int = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         super().__init__(
             EquipmentType.BODY_ARMOR, 
@@ -156,7 +176,9 @@ class BodyArmor(Armor):
             defense_addition,
             max_health_addition,
             miss_chance_addition,
-            miss_chance_multiplier
+            miss_chance_multiplier,
+            valve_resistance_addition,
+            valve_resistance_multiplier,
         )
 
 class MiscEquipment(Armor):
@@ -169,6 +191,8 @@ class MiscEquipment(Armor):
         max_health_addition: int = 0,
         miss_chance_addition: int = 0,
         miss_chance_multiplier: int = 1,
+        valve_resistance_addition: float = 0,
+        valve_resistance_multiplier: float = 1,
     ):
         super().__init__(
             EquipmentType.MISC, 
@@ -178,7 +202,9 @@ class MiscEquipment(Armor):
             defense_addition,
             max_health_addition,
             miss_chance_addition,
-            miss_chance_multiplier
+            miss_chance_multiplier,
+            valve_resistance_addition,
+            valve_resistance_multiplier,
         )
 
 """
@@ -303,12 +329,20 @@ class Earing(HeadArmor):
             self.equipment_message(attacker, f"The {attacker.name}'s radical earing confused the {target.name} for {self.confusion_time} turn(s).", target=target)
 
 class HuntingCap(HeadArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 2, valve_resistance_multiplier: float = 1.5):
+        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition, valve_resistance_multiplier=valve_resistance_multiplier)
 
 class BlackSunglasses(HeadArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
+    def __init__(self, fov: int = 4, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
+        self.old_fov = -1
+        self.new_fov = fov
         super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+
+    def trigger_equip(self):
+        self.old_fov = self.engine.set_fov(self.new_fov)
+
+    def trigger_unequip(self):
+        self.engine.set_fov(self.old_fov)
 
 class MassageBoard(HeadArmor):
     def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
@@ -319,50 +353,69 @@ Body Armor
 """
 
 class SantaOutfit(BodyArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, defense_addition=3):
+        super().__init__(defense_addition=defense_addition)
 
 class TrenchCoatAndScarf(BodyArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, valve_resistance_multiplier=1.5, defense_addition=1):
+        super().__init__(
+            valve_resistance_multiplier=valve_resistance_multiplier,
+            defense_addition=defense_addition
+            )
 
 class PoliceUniform(BodyArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, miss_chance_addition=1, defense_addition=2):
+        super().__init__(miss_chance_addition=miss_chance_addition, defense_addition=defense_addition)
 
 class TrixiesPajamas(BodyArmor):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, power_addition=2, miss_chance_addition=1):
+        super().__init__(power_addition=power_addition, miss_chance_addition=miss_chance_addition)
 
 """
 Misc Equipment
 """
 
 class HotDogCart(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, defense_addition = 2, power_addition = 2):
+        super().__init__(defense_addition=defense_addition, power_addition=power_addition)
 
 class PictureOfSantasMom(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, defense_addition=3, power_addition=-2):
+        super().__init__(defense_addition=defense_addition, power_addition=power_addition)
 
 class BoxOfPorno(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, defense_addition=2, max_health_addition=-5):
+        super().__init__(defense_addition=defense_addition, max_health_addition=max_health_addition)
 
 class LetterFromTheMinx(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, power_addition=3):
+        super().__init__(power_addition=power_addition)
 
 class YellowCockatoo(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, damage: int = 1, radius: int = 5):
+        super().__init__()
+        self.damage = damage
+        self.radius = radius
+
+    def attack(self, attacker, target):
+        enemies_in_range = self.game_map.actors_within_fov(
+            attacker.x,
+            attacker.y,
+            range=self.radius,
+            actors=self.game_map.hostile_actors,
+        )
+        for enemy in enemies_in_range:
+            enemy.fighter.take_damage(self.damage, counts_as_hit = False)
+        self.engine.message_log.add_message(
+            f"",
+            color.player_atk
+        )
 
 class APictureOfRex(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, miss_chance_addition=0.5, power_addition=3, defense_addition=3):
+        super().__init__(miss_chance_addition=miss_chance_addition, power_addition=power_addition, defense_addition=defense_addition)
 
 class LetterToMrAbelman(MiscEquipment):
-    def __init__(self, power_multiplier: int = 1, power_addition: int = 0, defense_multiplier: int = 1, defense_addition: int = 0):
-        super().__init__(power_multiplier, power_addition, defense_multiplier, defense_addition)
+    def __init__(self, miss_chance_multiplier=0.0):
+        super().__init__(miss_chance_multiplier=miss_chance_multiplier)
 

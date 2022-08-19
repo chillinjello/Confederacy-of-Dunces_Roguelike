@@ -22,6 +22,8 @@ class Fighter(BaseComponent):
         base_power: int, 
         base_valve: int = 100,
         *,
+        starting_valve: int = 50,
+        valve_increase_on_kill: int = 2,
         is_player: bool = False,
         base_valve_resistance: float = 1.0,
     ):
@@ -29,9 +31,10 @@ class Fighter(BaseComponent):
         self._hp = hp
         self.base_defense = base_defense
         self.base_power = base_power
-        self._valve = base_valve
+        self._valve = starting_valve
         self.max_valve = base_valve
         self.base_valve_resistance = base_valve_resistance
+        self.valve_increase_on_kill = valve_increase_on_kill
         self.is_player = is_player
         # We want to track that enemies just hit by player don't attack 
         self.just_hit = False
@@ -202,6 +205,10 @@ class Fighter(BaseComponent):
         self.engine.message_log.add_message(death_message, death_message_color)
 
         self.engine.player.level.add_xp(self.parent.level.xp_given)
+
+    def on_kill(self) -> None:
+        if self.engine.player is self.parent:
+            self.valve = min(self.max_valve, self.valve + self.valve_increase_on_kill)
     
     def heal(self, amount:int) -> int:
         if self.hp == self.max_hp:
@@ -224,7 +231,7 @@ class Fighter(BaseComponent):
     def max_out_valve(self) -> None:
         self.valve = self.max_valve
 
-    def take_damage(self, amount: int) -> None:
+    def take_damage(self, amount: int, counts_as_hit: bool = True) -> None:
         self.hp -= amount
 
         if self.is_player:
@@ -233,6 +240,6 @@ class Fighter(BaseComponent):
             self.just_hit = True
     
     def valve_take_damage(self, amount: int) -> None:
-        factor = 1 - 2 * abs(amount)/100
-        factor = factor * self.valve_resistance
-        self.valve = int(self.valve * factor)
+        factor = float(amount) * self.valve_resistance
+        assert(factor > 0)
+        self.valve = int(self.valve - factor)

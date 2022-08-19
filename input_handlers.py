@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import pdb
 
 from typing import Optional, TYPE_CHECKING, Callable, Tuple, Union
 
@@ -17,7 +18,9 @@ from actions import (
 )
 import color
 from components.buff import Buff
+from components.buff_container import BuffContainer
 from components.equipment import Equipment
+from components.equippable import Equippable
 import exceptions
 
 if TYPE_CHECKING:
@@ -308,7 +311,7 @@ class InventoryEventHandler(AskUserEventHandler):
 
         y = 0
 
-        width = len(self.TITLE) + 4
+        width = len(self.TITLE) + 10
 
         console.draw_frame(
             x=x,
@@ -635,77 +638,127 @@ class LevelUpEventHandler(AskUserEventHandler):
 
 class CharacterScreenEventHandler(AskUserEventHandler):
     TITLE = "Character Information"
+    ATTRIBUTE_INDENT = 4
 
-    def display_equipment(self, console: tcod.Console, equipment: Equipment, current_line: int, x: int, name: str) -> int:
+    def get_height_of_equipment(self, equipment: Item) -> int:
+        # if there isn't any equipment we're just going to have 1 empty row
+        if not equipment:
+            return 1
+
+        equippable = equipment.equippable
+
+        equipment_height = 1
+
+        equipment_height += 1 if equippable.power_addition != 0 else 0
+        equipment_height += 1 if equippable.power_multiplier != 1 else 0
+        equipment_height += 1 if equippable.defense_addition != 0 else 0
+        equipment_height += 1 if equippable.defense_multiplier != 1 else 0
+        equipment_height += 1 if equippable.miss_chance_addition != 0 else 0
+        equipment_height += 1 if equippable.miss_chance_multiplier != 1 else 0
+        equipment_height += 1 if equippable.valve_resistance_addition != 0 else 0
+        equipment_height += 1 if equippable.valve_resistance_multiplier != 1 else 0
+        equipment_height += 1 if equippable.max_health_addition != 0 else 0
+
+        return equipment_height
+
+    def get_height_of_buffs(self, buff_container: BuffContainer) -> int:
+        if not buff_container or len(buff_container.buff_list) == 0:
+            return 0
+
+        height = 0
+
+        for buff in buff_container.buff_list:
+            height += 1
+            height += 1 if buff.buff_time >= 0 else 0
+            height += 1 if buff.power_addition != 0 else 0
+            height += 1 if buff.power_multiplier != 1 else 0
+            height += 1 if buff.defense_addition != 0 else 0
+            height += 1 if buff.defense_multiplier != 1 else 0
+            height += 1 if buff.miss_chance_addition != 0 else 0
+            height += 1 if buff.miss_chance_multiplier != 1 else 0
+            height += 1 if buff.valve_resistance_addition != 0 else 0
+            height += 1 if buff.valve_resistance_multiplier != 1 else 0
+            height += 1 if buff.max_health_addition != 0 else 0
+
+        return 0
+
+    def display_equipment(self, console: tcod.Console, equipment: Item, current_line: int, x: int, name: str) -> int:
         if (equipment):
+            equippable = equipment.equippable
             console.print(
-                x=x + 1, y=current_line, string=f"{name}: {equipment.parent.name}"
+                x=x + 1, y=current_line, string=f"{name}: {equippable.parent.name}"
             )
             current_line += 1
-            attack_p = f"Attack (+): {equipment.power_addition}" if equipment.power_addition != 0 else ""
+            attack_p = f"Attack (+): {equippable.power_addition}" if equippable.power_addition != 0 else ""
             if attack_p != "":
                 console.print(
-                    x=x + 3, y=current_line, string=attack_p
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=attack_p
                 )
                 current_line += 1
-            attack_mult = f"Attack (%): {equipment.power_multiplier * 100}" if equipment.power_multiplier != 1 else ""
+            attack_mult = f"Attack (%): {equippable.power_multiplier * 100}" if equippable.power_multiplier != 1 else ""
             if attack_mult != "":
                 console.print(
-                    x=x + 3, y=current_line, string=attack_mult
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=attack_mult
                 )
                 current_line += 1
-            defense_p = f"Defense (+): {equipment.defense_addition}" if equipment.defense_addition != 0 else ""
+            defense_p = f"Defense (+): {equippable.defense_addition}" if equippable.defense_addition != 0 else ""
             if defense_p != "":
                 console.print(
-                    x=x + 3, y=current_line, string=defense_p
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=defense_p
                 )
                 current_line += 1
-            defense_mult = f"Defense (%): {equipment.defense_multiplier * 100}" if equipment.defense_multiplier != 1 else ""
+            defense_mult = f"Defense (%): {equippable.defense_multiplier * 100}" if equippable.defense_multiplier != 1 else ""
             if defense_mult != "":
                 console.print(
-                    x=x + 3, y=current_line, string=defense_mult
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=defense_mult
                 )
                 current_line += 1
-            miss_chance_p = f"Miss Chance (+): {equipment.miss_chance_addition}" if equipment.miss_chance_addition != 0 else ""
+            miss_chance_p = f"Miss Chance (+): {equippable.miss_chance_addition}" if equippable.miss_chance_addition != 0 else ""
             if miss_chance_p != "":
                 console.print(
-                    x=x + 3, y=current_line, string=miss_chance_p
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=miss_chance_p
                 )
                 current_line += 1
-            miss_chance_mult = f"Miss Chance (%): {equipment.miss_chance_multiplier * 100}" if equipment.miss_chance_multiplier != 1 else ""
+            miss_chance_mult = f"Miss Chance (%): {equippable.miss_chance_multiplier * 100}" if equippable.miss_chance_multiplier != 1 else ""
             if miss_chance_mult != "":
                 console.print(
-                    x=x + 3, y=current_line, string=miss_chance_mult
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=miss_chance_mult
                 )
                 current_line += 1
-            valve_resistance_p = f"Valve Resistance (+): {equipment.valve_resistance_addition}" if equipment.valve_resistance_addition != 0 else ""
+            valve_resistance_p = f"Valve Resistance (+): {equippable.valve_resistance_addition}" if equippable.valve_resistance_addition != 0 else ""
             if valve_resistance_p != "":
                 console.print(
-                    x=x + 3, y=current_line, string=valve_resistance_p
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=valve_resistance_p
                 )
                 current_line += 1
-            valve_resistance_mult = f"Valve Resistance (%): {equipment.valve_resistance_multiplier * 100}" if equipment.valve_resistance_multiplier != 1 else ""
+            valve_resistance_mult = f"Valve Resistance (%): {equippable.valve_resistance_multiplier * 100}" if equippable.valve_resistance_multiplier != 1 else ""
             if valve_resistance_mult != "":
                 console.print(
-                    x=x + 3, y=current_line, string=valve_resistance_mult
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=valve_resistance_mult
                 )
                 current_line += 1
-            max_health_p = f"Max Health (+): {equipment.max_health_addition}" if equipment.max_health_addition != 0 else ""
+            max_health_p = f"Max Health (+): {equippable.max_health_addition}" if equippable.max_health_addition != 0 else ""
             if max_health_p != "":
                 console.print(
-                    x=x + 3, y=current_line, string=max_health_p
+                    x=x + self.ATTRIBUTE_INDENT, y=current_line, string=max_health_p
                 )
                 current_line += 1
         else:
             console.print(
                 x=x + 1, y=current_line, string=f"{name}: None"
             )
+            current_line += 1
         return current_line
 
     def display_buff(self, console: tcod.Console, buff: Buff, current_line: int, x: int) -> int:
         console.print(
             x=x + 1, y=current_line, string=f"{buff.parent.name}"
         )
+        current_line += 1
+        if buff.buff_time >= 0:
+            console.print(
+                x=x + 3, y=current_line, string=f"Turns Left: {buff.buff_time}"
+            )
         current_line += 1
         attack_p = f"Attack (+): {buff.power_addition}" if buff.power_addition != 0 else ""
         if attack_p != "":
@@ -804,32 +857,59 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}"
         )
         console.print(
-            x=x + 1, y=y + 6, string=f"Miss Chance: {self.engine.player.fighter.miss_chance}%"
+            x=x + 1, y=y + 6, string=f"Miss Chance: {self.engine.player.fighter.miss_chance * 100}%"
         )
         console.print(
             x=x + 1, y=y + 7, string=f"Valve Resistance: {self.engine.player.fighter.valve_resistance}"
         )
 
         # Print current items
-        console.print(
-            x=x + 1, y=y + 9, string=f"---Inventory---"
+        equipment_height = 2
+        equipment_height += self.get_height_of_equipment(self.engine.player.equipment.weapon)
+        equipment_height += self.get_height_of_equipment(self.engine.player.equipment.head_armor)
+        equipment_height += self.get_height_of_equipment(self.engine.player.equipment.body_armor)
+        equipment_height += self.get_height_of_equipment(self.engine.player.equipment.misc_equipment)
+
+        console.draw_frame(
+            x=x,
+            y=y + 9,
+            width=width,
+            height=equipment_height,
+            title=f"Equipment",
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
         )
 
         current_line = y + 10
+        # Weapon
+        current_line = self.display_equipment(console, self.engine.player.equipment.weapon, current_line, x, "Weapon")
+
         # Head
-        current_line = self.display_equipment(console, self.engine.player.equipment.head_armor.equippable, current_line, x, "Head")
+        current_line = self.display_equipment(console, self.engine.player.equipment.head_armor, current_line, x, "Head")
 
         # Body
-        current_line = self.display_equipment(console, self.engine.player.equipment.body_armor.equippable, current_line, x, "Body")
+        current_line = self.display_equipment(console, self.engine.player.equipment.body_armor, current_line, x, "Body")
 
         # Misc
-        current_line = self.display_equipment(console, self.engine.player.equipment.misc_equipment.equippable, current_line, x, "Misc")
+        current_line = self.display_equipment(console, self.engine.player.equipment.misc_equipment, current_line, x, "Misc")
 
         # Print Buffs
         current_line += 1
-        console.print(
-            x=x + 1, y=current_line, string=f"---Buffs---"
+        buff_height = 2
+        buff_height += self.get_height_of_buffs(self.engine.player.buff_container)
+
+        console.draw_frame(
+            x=x,
+            y=current_line,
+            width=width,
+            height=buff_height,
+            title=f"Buffs",
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
         )
+
         current_line += 1
         if len(self.engine.player.buff_container.buff_list) > 0:
             console.print(

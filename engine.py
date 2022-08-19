@@ -23,6 +23,7 @@ class Engine:
         self.message_log = MessageLog()
         self.mouse_location = (0,0)
         self.player = player
+        self.player_fov = 8
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
@@ -32,12 +33,18 @@ class Engine:
                 except:
                     pass # Ignore impossible action exceptions from AI.
 
+    # returns the old fov
+    def set_fov(self, new_fov) -> int:
+        old_fov = self.player_fov
+        self.player_fov = new_fov
+        return old_fov
+
     def update_fov(self) -> None:
         """Recompute the visible area based on the players point of view."""
         self.game_map.visible[:] = compute_fov(
             self.game_map.tiles["transparent"],
             (self.player.x, self.player.y),
-            radius=8
+            radius=self.player_fov
         )
         # If a tile is "visible" it should be added to "explored".
         self.game_map.explored |= self.game_map.visible

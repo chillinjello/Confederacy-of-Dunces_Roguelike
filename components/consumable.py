@@ -584,7 +584,6 @@ class BowlingBall(Consumable):
             raise Impossible("You cannot target yourself.")
 
         # get rid of the first entry
-        coords.pop()
         targets_in_line = []
         for coord in coords:
             coord_target = self.engine.game_map.get_actor_at_location(*coord)
