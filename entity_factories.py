@@ -20,6 +20,171 @@ player = Actor(
     hostile=Actor.FRIENDLY_ACTOR,
 )
 
+"""
+French Quarter
+"""
+
+#
+# Special Enemies
+#
+
+george = Actor(
+    char="G", 
+    color=(0, 127, 0), 
+    name="George", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+dorian_green = Actor(
+    char="D", 
+    color=(0, 127, 0), 
+    name="Dorian Green", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+#
+# Common Enemies
+#
+sailor = Actor(
+    char="s", 
+    color=(0, 127, 0), 
+    name="Dorian Green", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+fop = Actor(
+    char="f", 
+    color=(0, 127, 0), 
+    name="Fop", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+lady_painter = Actor(
+    char="l", 
+    color=(0, 127, 0), 
+    name="Lady Painter", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+"""
+Ignatius' House
+"""
+#
+# Special Enemies
+#
+
+#
+# Common Enemies
+#
+
+"""
+Levy Factory
+"""
+#
+# Special Enemies
+#
+
+#
+# Common Enemies
+#
+
+"""
+Night of Joy Bar
+"""
+#
+# Special Enemies
+#
+cockatoo = Actor(
+    char="C", 
+    color=(0, 127, 0), 
+    name="Cockatoo", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+lana_lee = Actor(
+    char="L", 
+    color=(0, 127, 0), 
+    name="Lana Lee", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+#
+# Common Enemies
+#
+vagabond = Actor(
+    char="v", 
+    color=(0, 127, 0), 
+    name="Vagabond", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+bartender = Actor(
+    char="b", 
+    color=(0, 127, 0), 
+    name="Bartender", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+"""
+University
+"""
+#
+# Special Enemies
+#
+
+#
+# Common Enemies
+#
+
 orc = Actor(
     char="o", 
     color=(63, 127, 63), 
