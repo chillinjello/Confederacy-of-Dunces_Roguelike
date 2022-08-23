@@ -7,6 +7,7 @@ from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
 
+# Player
 player = Actor(
     char="@",
     color=(255, 255, 255), 
@@ -99,10 +100,70 @@ Ignatius' House
 #
 # Special Enemies
 #
+neighbor_annie = Actor(
+    char="A", 
+    color=(0, 127, 0), 
+    name="Neighbor Annie", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+claude_robichaux = Actor(
+    char="C", 
+    color=(0, 127, 0), 
+    name="Claude Robichaux", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
 
 #
 # Common Enemies
 #
+neighbor = Actor(
+    char="n", 
+    color=(0, 127, 0), 
+    name="Neighbor", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+hoodlem = Actor(
+    char="h", 
+    color=(0, 127, 0), 
+    name="Hoodlem", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+psychoanalyist = Actor(
+    char="p", 
+    color=(0, 127, 0), 
+    name="Psychoanalyist", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
 
 """
 Levy Factory
@@ -110,10 +171,82 @@ Levy Factory
 #
 # Special Enemies
 #
+gonzoloz = Actor(
+    char="G", 
+    color=(0, 127, 0), 
+    name="Gonzoloz", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+mrs_riley = Actor(
+    char="R", 
+    color=(0, 127, 0), 
+    name="Mrs. Riley", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+mr_riley = Actor(
+    char="R", 
+    color=(0, 127, 0), 
+    name="Mr. Riley", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
 
 #
 # Common Enemies
 #
+factory_worker = Actor(
+    char="w", 
+    color=(0, 127, 0), 
+    name="Factory Worker", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+office_worker = Actor(
+    char="o", 
+    color=(0, 127, 0), 
+    name="Office Worker", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+foreman = Actor(
+    char="f", 
+    color=(0, 127, 0), 
+    name="Foreman", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
 
 """
 Night of Joy Bar
@@ -161,6 +294,18 @@ vagabond = Actor(
     level=Level(xp_given=100),
     hostile=Actor.HOSTILE_ACTOR,
 )
+sailor = Actor(
+    char="s", 
+    color=(0, 127, 0), 
+    name="Sailor", 
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
 bartender = Actor(
     char="b", 
     color=(0, 127, 0), 
@@ -180,27 +325,10 @@ University
 #
 # Special Enemies
 #
-
-#
-# Common Enemies
-#
-
-orc = Actor(
-    char="o", 
-    color=(63, 127, 63), 
-    name="Orc", 
-    ai_cls=HostileEnemy,
-    equipment=Equipment(),
-    fighter=Fighter(hp=3, base_defense=0, base_power=2),
-    inventory=Inventory(capacity=26),
-    buff_container=BuffContainer(),
-    level=Level(xp_given=35),
-    hostile=Actor.HOSTILE_ACTOR,
-)
-troll = Actor(
-    char="T", 
-    color=(0, 127, 0), 
-    name="Troll", 
+greyhound_bus = Actor(
+    char="B",
+    color=(0, 127, 0),
+    name="Greyhound Bus",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
     fighter=Fighter(hp=5, base_defense=1, base_power=3),
@@ -209,6 +337,62 @@ troll = Actor(
     level=Level(xp_given=100),
     hostile=Actor.HOSTILE_ACTOR,
 )
+professor_talc = Actor(
+    char="P",
+    color=(0, 127, 0),
+    name="Professor Talc",
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+#
+# Common Enemies
+#
+student = Actor(
+    char="s",
+    color=(0, 127, 0),
+    name="Student",
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+redneck = Actor(
+    char="r",
+    color=(0, 127, 0),
+    name="Rednecks",
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+cracker = Actor(
+    char="c",
+    color=(0, 127, 0),
+    name="Cracker",
+    ai_cls=HostileEnemy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=100),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+
+"""
+Other Entities
+"""
 cross_entity = Actor(
     char="t",
     color=(0, 127, 0),
