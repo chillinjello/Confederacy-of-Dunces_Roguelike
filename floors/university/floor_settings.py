@@ -12,10 +12,7 @@ item_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factories.bowling_ball, 100)]
 }
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.orc, 80)],
-    3: [(entity_factories.troll, 15)],
-    5: [(entity_factories.troll, 30)],
-    7: [(entity_factories.troll, 60)],
+    0: [(entity_factories.dorian_green, 80)],
 }
 
 floor_settings = {

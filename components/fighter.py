@@ -1,13 +1,18 @@
 from __future__ import annotations
+from ast import walk
 import pdb
 
 from typing import TYPE_CHECKING
 from xmlrpc.client import boolean
+import random
+import numpy as np
 
 import color
+import entity_factories
 from components.base_component import BaseComponent
 from game_map import GameMap
 from render_order import RenderOrder
+
 
 if TYPE_CHECKING:
     from entity import Actor
@@ -243,3 +248,37 @@ class Fighter(BaseComponent):
         factor = float(amount) * self.valve_resistance
         assert(factor > 0)
         self.valve = int(self.valve - factor)
+
+class GeorgeFighter(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, base_valve: int = 100, *, starting_valve: int = 50):
+        super().__init__(hp, base_defense, base_power, base_valve, starting_valve=starting_valve)
+        self.hit_lethal = False
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True) -> None:
+        if (self.hp <= amount and not self.hit_lethal):
+            self.hp = 1
+            self.hit_lethal = True
+            walkable_coords = self.game_map.walkable_coords()
+            if (len(walkable_coords) > 0):
+                r_index = random.randint(0, len(walkable_coords) - 1)
+                r_coord = walkable_coords[r_index]
+                self.parent.place(*r_coord)
+        else:
+            self.hp -= amount
+
+        self.just_hit
+
+class DorianGreenFighter(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, fov: int = 10, spawn_count: int = 1):
+        self.spawn_fov = fov
+        self.spawn_count = spawn_count
+        super().__init__(hp, base_defense, base_power)
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True) -> None:
+        valid_coords = self.game_map.walkable_coords_in_range(self.parent.x, self.parent.y, self.spawn_fov)
+        np.random.shuffle(valid_coords)
+        for (x,y) in valid_coords[0:self.spawn_count + 1]:
+            new_fop = entity_factories.fop.spawn(self.game_map, x, y)
+            new_fop.fighter.just_hit = True
+
+        return super().take_damage(amount, counts_as_hit)

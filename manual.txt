@@ -2,43 +2,125 @@ The second room placed should be the boss room to insure that the room is placed
 
 Make numbers really small so that damage and things are more significant
 
+Player stats: 
+    HP: 10
+    P: 2
+
 Areas:
 - French Quarter
     - Bosses:
         - George
+            - Will teleport once after he's brought to 0 health
+            - HP: 5
+            - P: 10
         - Dorian Green
+            - Summons 2 Fops in the a 10 foot radius each time he's hit
+            - HP: 20
+            - P: 4
     - Enemies:
         - Sailors
+            - HP: 4
+            - P: 2
         - Fop
+            - HP: 2
+            - P: 4
         - Lady Painter
+            - HP: 3
+            - P: 3
 - Ignatius' House
     - Bosses:
+        - Neighbor Annie
+            - Must be attacked w/ her back against the wall
+            - HP: 8
+            - P: 4
+        - Claude Robichaux
+            - Shouts at player and lowers defense
+            - HP: 10
+            - P: 5
+    - Enemies:
         - Neighbor
+            - HP: 6
+            - P: 1
+        - Hoodlem
+            - HP: 4
+            - P: 4
+        - Psychoanalyist
+            - HP: 2
+            - P: 5
 - Levy Factory
     - Boss
         - Gonzoloz
-        - 
+            - Upon hit will "fire" player forcing him back 5 spaces and sommoning 2 office workers.
+            - HP: 10
+            - P: 4
+        - Mrs. Levy
+            - Summons massage board that must be killed before her
+            - HP: 5
+            - P: 5
+                - Massage Board: 
+                    - HP: 20
+                    - P: 0
+        - Mr. Levy
+            - Sues you, stealing your equipment and lowering your defense.
+            - HP: 5
+            - P: 5
+    - Enemies
+        - Factory Worker
+            - HP: 4
+            - P: 3
+        - Office Worker
+            - HP: 1
+            - P: 4
+        - Foreman
+            - HP: 7
+            - P: 1
 - Night of Joy Bar
     - Boss
         - Lana Lee
+            - Isn't stunned on hit
+            - HP: 10
+            - P: 3
         - Cockatoo
+            - High miss chance and will move around randomly until it's attacked.
+            - HP: 15
+            - P: 3
     - Enemies
         - Vagabonds
+            - HP: 3
+            - P: 3
         - Sailors
+            - HP: 4
+            - P: 2
         - Bartender
+            - HP: 2
+            - P: 2
     - Visuals
         - Dark rooms
         - Place Dirt and Tables around
 - University
     - Boss
         - Bus
+            - Moves around randomly and isn't stopped by attacks 
+            - HP: 20
+            - P: 3
         - Professor (Dr. Talc)
-            - Spread rumors that he's a papist
-            - History of the British monarchy
+            - If you're within his 4x4 range for 5 turns, he'll give you a bad grade, dealing 4 damage
+            - Runs away from player
+            - HP: 8
+            - P: 0
+                - Spread rumors that he's a papist
+                - History of the British monarchy
     - Enemies
         - Students
+            (Should be spawned at much higher rate)
+            - HP: 1
+            - P: 2
         - Rednecks
+            - HP: 3
+            - P: 3
         - Crackers
+            - HP: 1
+            - P: 5
 
 Other characters:
     - Claud Robichaux
@@ -50,6 +132,7 @@ Other characters:
     - Three Girls
     - Office manager
     - Myrna Minkoff
+    - Mr. Clyde
 
 
 Consumables:

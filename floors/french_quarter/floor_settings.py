@@ -12,10 +12,10 @@ item_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factories.the_consolation_of_philosophy, 100), (entity_factories.dr_nut, 50), (entity_factories.jelly_donut, 50)]
 }
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.orc, 80)],
-    3: [(entity_factories.troll, 15)],
-    5: [(entity_factories.troll, 30)],
-    7: [(entity_factories.troll, 60)],
+    0: [(entity_factories.fop, 80)],
+    3: [(entity_factories.fop, 15)],
+    5: [(entity_factories.fop, 30)],
+    7: [(entity_factories.fop, 60)],
 }
 
 floor_settings = {

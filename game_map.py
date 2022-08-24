@@ -1,4 +1,5 @@
 from __future__ import annotations
+import pdb
 
 from typing import Iterable, Iterator, Optional, Tuple, TYPE_CHECKING
 
@@ -97,7 +98,6 @@ class GameMap:
         
         return actors_in_range
 
-
     @property
     def items(self) -> Iterator[Item]:
         yield from (entity for entity in self.entities if isinstance(entity, Item))
@@ -130,6 +130,20 @@ class GameMap:
                 if self.tiles["walkable"][x,y]:
                     walkable_coord_array.append((x,y))
         return walkable_coord_array
+
+    def walkable_coords_in_range(self, x, y, range) -> Iterable(Tuple[int, int]):
+        fov = compute_fov(
+            self.tiles["transparent"],
+            (x,y),
+            radius = range,
+        )
+        walkable_coords_in_range = []
+        for x, xVal in enumerate(fov):
+            for y, yVal in enumerate(fov[x]):
+                if yVal and self.is_walkable(x,y) and self.get_blocking_entity_at_location(x,y) == None:
+                    walkable_coords_in_range.append((x, y))
+
+        return walkable_coords_in_range
 
     def render(self, console: Console) -> None:
         """

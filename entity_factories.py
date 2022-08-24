@@ -2,7 +2,7 @@ from components.ai import HostileEnemy, InanimateObject
 from components import consumable, equippable
 from components.buff_container import BuffContainer
 from components.equipment import Equipment
-from components.fighter import Fighter
+from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter
 from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
@@ -35,10 +35,10 @@ george = Actor(
     name="George", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=GeorgeFighter(hp=5, base_defense=0, base_power=10),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 dorian_green = Actor(
@@ -47,10 +47,10 @@ dorian_green = Actor(
     name="Dorian Green", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=DorianGreenFighter(fov=10, spawn_count=1, hp=20, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -63,10 +63,10 @@ sailor = Actor(
     name="Dorian Green", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=4, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 fop = Actor(
@@ -75,10 +75,10 @@ fop = Actor(
     name="Fop", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=2, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 lady_painter = Actor(
@@ -87,10 +87,10 @@ lady_painter = Actor(
     name="Lady Painter", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=3, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -106,10 +106,10 @@ neighbor_annie = Actor(
     name="Neighbor Annie", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=8, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 claude_robichaux = Actor(
@@ -118,10 +118,10 @@ claude_robichaux = Actor(
     name="Claude Robichaux", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=10, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -134,10 +134,10 @@ neighbor = Actor(
     name="Neighbor", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=6, base_defense=0, base_power=1),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 hoodlem = Actor(
@@ -146,10 +146,10 @@ hoodlem = Actor(
     name="Hoodlem", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=4, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 psychoanalyist = Actor(
@@ -158,10 +158,10 @@ psychoanalyist = Actor(
     name="Psychoanalyist", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=2, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -177,10 +177,10 @@ gonzoloz = Actor(
     name="Gonzoloz", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=10, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 mrs_riley = Actor(
@@ -189,10 +189,10 @@ mrs_riley = Actor(
     name="Mrs. Riley", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=5, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 mr_riley = Actor(
@@ -201,10 +201,10 @@ mr_riley = Actor(
     name="Mr. Riley", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=5, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -217,10 +217,10 @@ factory_worker = Actor(
     name="Factory Worker", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=4, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 office_worker = Actor(
@@ -229,10 +229,10 @@ office_worker = Actor(
     name="Office Worker", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=1, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 foreman = Actor(
@@ -241,10 +241,10 @@ foreman = Actor(
     name="Foreman", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=7, base_defense=0, base_power=1),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -260,10 +260,10 @@ cockatoo = Actor(
     name="Cockatoo", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=10, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 lana_lee = Actor(
@@ -272,10 +272,10 @@ lana_lee = Actor(
     name="Lana Lee", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=10, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -288,10 +288,10 @@ vagabond = Actor(
     name="Vagabond", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=3, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 sailor = Actor(
@@ -300,10 +300,10 @@ sailor = Actor(
     name="Sailor", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=4, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 bartender = Actor(
@@ -312,10 +312,10 @@ bartender = Actor(
     name="Bartender", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=2, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -331,10 +331,10 @@ greyhound_bus = Actor(
     name="Greyhound Bus",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=20, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 professor_talc = Actor(
@@ -343,10 +343,10 @@ professor_talc = Actor(
     name="Professor Talc",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=8, base_defense=0, base_power=0),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -359,10 +359,10 @@ student = Actor(
     name="Student",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=1, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 redneck = Actor(
@@ -371,10 +371,10 @@ redneck = Actor(
     name="Rednecks",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=3, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 cracker = Actor(
@@ -383,10 +383,10 @@ cracker = Actor(
     name="Cracker",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=1, base_power=3),
+    fighter=Fighter(hp=1, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=100),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
