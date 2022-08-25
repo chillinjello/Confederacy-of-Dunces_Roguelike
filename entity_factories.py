@@ -1,8 +1,8 @@
-from components.ai import HostileEnemy, InanimateObject
+from components.ai import ClaudeRobichauxAI, HostileEnemy, InanimateObject
 from components import consumable, equippable
 from components.buff_container import BuffContainer
 from components.equipment import Equipment
-from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter
+from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter, NeighborAnnie
 from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
@@ -106,7 +106,7 @@ neighbor_annie = Actor(
     name="Neighbor Annie", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=8, base_defense=0, base_power=4),
+    fighter=NeighborAnnie(hp=8, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
@@ -116,7 +116,7 @@ claude_robichaux = Actor(
     char="C", 
     color=(0, 127, 0), 
     name="Claude Robichaux", 
-    ai_cls=HostileEnemy,
+    ai_cls=ClaudeRobichauxAI,
     equipment=Equipment(),
     fighter=Fighter(hp=10, base_defense=0, base_power=5),
     inventory=Inventory(capacity=26),

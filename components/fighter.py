@@ -236,7 +236,7 @@ class Fighter(BaseComponent):
     def max_out_valve(self) -> None:
         self.valve = self.max_valve
 
-    def take_damage(self, amount: int, counts_as_hit: bool = True) -> None:
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
         self.hp -= amount
 
         if self.is_player:
@@ -263,10 +263,15 @@ class GeorgeFighter(Fighter):
                 r_index = random.randint(0, len(walkable_coords) - 1)
                 r_coord = walkable_coords[r_index]
                 self.parent.place(*r_coord)
+                teleport_message = "George pulled a fast one at teleported somewhere!"
+                self.engine.message_log.add_message(
+                    teleport_message, 
+                    color.enemy_atk     
+                )
         else:
             self.hp -= amount
 
-        self.just_hit
+        self.just_hit = True
 
 class DorianGreenFighter(Fighter):
     def __init__(self, hp: int, base_defense: int, base_power: int, fov: int = 10, spawn_count: int = 1):
@@ -275,10 +280,57 @@ class DorianGreenFighter(Fighter):
         super().__init__(hp, base_defense, base_power)
 
     def take_damage(self, amount: int, counts_as_hit: bool = True) -> None:
-        valid_coords = self.game_map.walkable_coords_in_range(self.parent.x, self.parent.y, self.spawn_fov)
-        np.random.shuffle(valid_coords)
-        for (x,y) in valid_coords[0:self.spawn_count + 1]:
-            new_fop = entity_factories.fop.spawn(self.game_map, x, y)
-            new_fop.fighter.just_hit = True
+        if (amount < self.hp):
+            valid_coords = self.game_map.walkable_coords_in_range(self.parent.x, self.parent.y, self.spawn_fov)
+            np.random.shuffle(valid_coords)
+            search_range = 1
+            for (x,y) in valid_coords[0:self.spawn_count + search_range]:
+                if (self.game_map.get_blocking_entity_at_location(x,y)) != None:
+                    search_range += 1
+                    continue
+                new_fop = entity_factories.fop.spawn(self.game_map, x, y)
+                new_fop.fighter.just_hit = True
+                summon_message = "Dorian Green summons degenerates from the gullies of the Frech Quarter!"
+                self.engine.message_log.add_message(
+                    summon_message, 
+                    color.enemy_atk     
+                )
 
         return super().take_damage(amount, counts_as_hit)
+
+class NeighborAnnie(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, base_valve: int = 100, *, starting_valve: int = 50, valve_increase_on_kill: int = 2, is_player: bool = False, base_valve_resistance: float = 1):
+        super().__init__(hp, base_defense, base_power, base_valve, starting_valve=starting_valve)
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        if (attacker == None):
+            super().take_damage(amount, counts_as_hit, attacker)
+            return
+        
+        # Get actor coordinates
+        a_x, a_y = attacker.x, attacker.y
+        x, y = self.parent.x, self.parent.y 
+
+        # Get behind coordinate for 1 pushes
+        b_x_1 = x + 1 * max(min(1, x - a_x), -1)
+        b_y_1 = y + 1 * max(min(1, y - a_y), -1)
+
+        # Check if the coordinate is walkable
+        is_clear_1 = self.game_map.is_coord_clear_and_walkable(b_x_1, b_y_1)
+        if (not is_clear_1):
+            super().take_damage(amount, counts_as_hit, attacker)
+        else:
+            # Get behind coordinate for 2 pushes
+            b_x_2 = x + 2 * max(min(1, x - a_x), -1)
+            b_y_2 = y + 2 * max(min(1, y - a_y), -1)
+
+            # Check if the coordinate is walkable
+            is_clear_2 = self.game_map.is_coord_clear_and_walkable(b_x_2, b_y_2)
+            if (not is_clear_2):
+                # if 2 pushes is not clear, only push once
+                self.parent.place(b_x_1, b_y_1)
+                self.just_hit = True
+            else:
+                # if 2 pushes is clear, push both times
+                self.parent.place(b_x_2, b_y_2)
+                self.just_hit = True

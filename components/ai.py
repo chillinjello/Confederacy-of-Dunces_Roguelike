@@ -12,6 +12,7 @@ import tcod
 import pdb
 
 from actions import Action, MeleeAction, MovementAction, WaitAction, BumpAction
+from components.buff import Buff
 from entity import Actor
 
 class BaseAI(Action):
@@ -245,3 +246,34 @@ class ConfusedEnemy(BaseAI):
             # The actor will either try to move or attack in the chosen random direction.
             # Its possible the actor will just bump into the wall, wasting a turn.
             return BumpAction(self.entity, direction_x, direction_y,).perform()
+
+class ClaudeRobichauxAI(HostileEnemy):
+    def __init__(self, entity: Actor, time_till_shout: int = 6, debuff_amount: int = 1, defense_debuff_time: int = 20):
+        super().__init__(entity)
+        self.debuff_amount = debuff_amount
+        self.base_time_till_shout = time_till_shout
+        self.defense_debuff_time = defense_debuff_time
+
+        self.current_time_till_shout = self.base_time_till_shout
+
+
+    def perform(self) -> None:
+        action = super().perform()
+
+        player = self.entity.game_map.engine.player
+        if self.current_target != None and self.current_target == player:
+            self.current_time_till_shout -= 1
+        if self.current_time_till_shout == 1:
+            self.engine.message_log.add_message(
+                f"Claude Robichaux is about to pop!"
+            )
+        elif self.current_time_till_shout == 0:
+            debuff = Buff(defense_addition=-1)
+            player.buff_container.add_buff(debuff)
+
+            self.current_time_till_shout = self.base_time_till_shout
+            self.engine.message_log.add_message(
+                f"Claude Robichaux yells at the Player, lowering their defense by {self.base_time_till_shout}."
+            )
+
+        return action

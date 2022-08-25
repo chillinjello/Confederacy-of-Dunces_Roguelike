@@ -156,7 +156,7 @@ class MeleeAction(ActionWithDirection):
         attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
         if damage > 0:
             self.engine.message_log.add_message(f"{attack_desc} for {damage} hit points.", attack_color)
-            target.fighter.take_damage(damage)
+            target.fighter.take_damage(damage, attacker=self.entity)
             if not target.is_alive:
                 self.entity.fighter.on_kill()
         else:

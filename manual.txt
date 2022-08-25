@@ -1,3 +1,5 @@
+Buff view isn't working :(
+
 The second room placed should be the boss room to insure that the room is placed at all.
 
 Make numbers really small so that damage and things are more significant

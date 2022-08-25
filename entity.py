@@ -52,7 +52,7 @@ class Entity:
             parent.entities.add(self)
     
     @property
-    def game_map(self) -> game_map:
+    def game_map(self) -> GameMap:
         return self.parent.game_map
 
     @property

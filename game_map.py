@@ -131,6 +131,12 @@ class GameMap:
                     walkable_coord_array.append((x,y))
         return walkable_coord_array
 
+    def is_coord_clear_and_walkable(self, x, y) -> bool:
+        if not self.get_blocking_entity_at_location(x, y) == None:
+            return False
+
+        return self.is_walkable(x, y)
+
     def walkable_coords_in_range(self, x, y, range) -> Iterable(Tuple[int, int]):
         fov = compute_fov(
             self.tiles["transparent"],
