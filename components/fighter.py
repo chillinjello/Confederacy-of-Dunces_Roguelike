@@ -334,3 +334,92 @@ class NeighborAnnie(Fighter):
                 # if 2 pushes is clear, push both times
                 self.parent.place(b_x_2, b_y_2)
                 self.just_hit = True
+
+class GonzolozFighter(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, base_valve: int = 100, *, push_back_distance: int = 5, enemies_summoned: int = 2, spawn_fov: int = 10, starting_valve: int = 50):
+        super().__init__(hp, base_defense, base_power, base_valve, starting_valve=starting_valve)
+        self.enemies_summoned = enemies_summoned
+        self.push_back_distance = push_back_distance
+        self.spawn_fov = spawn_fov
+
+    def push_back_player(self, player):
+        x_diff = player.x - self.parent.x
+        y_diff = player.y - self.parent.y
+
+        mult = 1
+        new_x_pos, new_y_pos = player.x, player.y
+        while mult <= self.push_back_distance:
+            prev_x_pos = new_x_pos
+            prev_y_pos = new_y_pos
+            new_x_pos = player.x + (mult * x_diff)
+            new_y_pos = player.y + (mult * y_diff)
+            is_clear = self.game_map.is_coord_clear_and_walkable(new_x_pos, new_y_pos)
+            if not is_clear:
+                if (prev_x_pos == player.x and prev_y_pos == player.y):
+                    # player is not pushed
+                    break
+                else:
+                    player.place(prev_x_pos, prev_y_pos)
+                    break
+            elif mult == self.push_back_distance:
+                player.place(prev_x_pos, prev_y_pos)
+                break
+            mult += 1
+
+    def summon_office_workers(self):
+        valid_coords = self.game_map.walkable_coords_in_range(self.parent.x, self.parent.y, self.spawn_fov)
+        np.random.shuffle(valid_coords)
+        search_range = 0
+        for (x,y) in valid_coords[0:self.enemies_summoned + search_range]:
+            if (self.game_map.get_blocking_entity_at_location(x,y)) != None:
+                search_range += 1
+                continue
+            new_office_worker = entity_factories.office_worker.spawn(self.game_map, x, y)
+            new_office_worker.fighter.just_hit = True
+
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        player = self.game_map.engine.player
+        if (attacker is player):
+            self.push_back_player(player)
+            push_message = "You've left Gonzoloz no choice but to fire you! He forces you away!"
+            self.engine.message_log.add_message(
+                push_message, 
+                color.enemy_atk     
+            )
+        if amount < self.hp:
+            self.summon_office_workers()
+        return super().take_damage(amount, counts_as_hit, attacker)
+
+class MrsLevyFighter(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, base_valve: int = 100, *, starting_valve: int = 50, massage_board_health: int = 20):
+        super().__init__(hp, base_defense, base_power, base_valve, starting_valve=starting_valve)
+        self.massage_board_health = massage_board_health
+
+        self.massage_board = None
+
+        self.has_been_hit_once = False
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        if not self.has_been_hit_once:
+            self.has_been_hit_once = True
+            (x, y) = self.game_map.find_closest_empty_space(self.parent.x, self.parent.y)
+            self.massage_board = entity_factories.massage_board_entity.spawn(self.game_map, x, y)
+            summon_message = "Mrs. Levy took defense behind her massage board! You must remove it before going after her!"
+            self.engine.message_log.add_message(
+                summon_message,
+                color.enemy_atk     
+            )
+            return super().take_damage(amount, counts_as_hit, attacker)
+        elif self.massage_board != None and self.massage_board.is_alive:
+            # Do nothing if the massage_board is still alive
+            defense_message = "You can't damage Mrs. Levy until her massage board is gotten rid of!"
+            self.engine.message_log.add_message(
+                defense_message,
+                color.enemy_atk     
+            )
+            self.just_hit = True
+        else:
+            return super().take_damage(amount, counts_as_hit, attacker)
+
+        return None

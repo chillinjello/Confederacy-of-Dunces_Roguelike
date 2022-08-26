@@ -7,6 +7,7 @@ import numpy as np
 from tcod.console import Console
 from tcod.map import compute_fov
 
+import color
 from entity import Actor, Item
 import tile_types
 
@@ -150,6 +151,29 @@ class GameMap:
                     walkable_coords_in_range.append((x, y))
 
         return walkable_coords_in_range
+
+    def find_closest_empty_space(self, x, y, radius=5) -> Tuple[int, int]:
+        distance_vectors = []
+        for i in range(radius):
+            for j in range(radius):
+                if i == 0 and j == 0:
+                    continue
+                distance_vectors.append((i,j))
+                distance_vectors.append((i,-j))
+                distance_vectors.append((-i,j))
+                distance_vectors.append((-i,-j))
+        spaces_to_test = []
+        for vector in distance_vectors:
+            spaces_to_test.append((vector[0] + x, vector[1] + y))
+        distance_vectors.sort(key=lambda v: v[0] + v[1], reverse=True)
+        for space in spaces_to_test:
+            if self.is_coord_clear_and_walkable(*space):
+                return space
+        self.engine.message_log.add_message(
+            f"There was an error finding closest empty space",
+            color.error
+        )
+        return None
 
     def render(self, console: Console) -> None:
         """

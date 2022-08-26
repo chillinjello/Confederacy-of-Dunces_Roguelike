@@ -1,8 +1,8 @@
-from components.ai import ClaudeRobichauxAI, HostileEnemy, InanimateObject
+from components.ai import ClaudeRobichauxAI, HostileEnemy, SlowHostileEnemy, InanimateObject
 from components import consumable, equippable
 from components.buff_container import BuffContainer
 from components.equipment import Equipment
-from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter, NeighborAnnie
+from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter, GonzolozFighter, MrsLevyFighter, NeighborAnnie
 from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
@@ -177,25 +177,37 @@ gonzoloz = Actor(
     name="Gonzoloz", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=10, base_defense=0, base_power=4),
+    fighter=GonzolozFighter(hp=10, base_defense=0, base_power=4),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
-mrs_riley = Actor(
+mrs_levy = Actor(
     char="R", 
     color=(0, 127, 0), 
     name="Mrs. Riley", 
-    ai_cls=HostileEnemy,
+    ai_cls=SlowHostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=0, base_power=5),
+    fighter=MrsLevyFighter(hp=5, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
-mr_riley = Actor(
+massage_board_entity = Actor(
+    char="m",
+    color=(0, 127, 0),
+    name="Massage Board",
+    ai_cls=InanimateObject,
+    equipment=Equipment(),
+    fighter=Fighter(hp=20, base_defense=0, base_power=0),
+    inventory=Inventory(capacity=26),
+    buff_container=BuffContainer(),
+    level=Level(xp_given=150),
+    hostile=Actor.HOSTILE_ACTOR,
+)
+mr_levy = Actor(
     char="R", 
     color=(0, 127, 0), 
     name="Mr. Riley", 
@@ -406,6 +418,9 @@ cross_entity = Actor(
     hostile=Actor.INANIMATE_ACTOR,
 )
 
+"""
+Items
+"""
 jelly_donut = Item(
     char="!",
     color=(207, 63, 255),
@@ -594,7 +609,7 @@ black_sunglasses = Item(
         power_addition=2
     )
 )
-massage_board = Item(
+massage_board_item = Item(
     char="{", 
     color=(139, 69, 19), 
     name="Massage Board", 

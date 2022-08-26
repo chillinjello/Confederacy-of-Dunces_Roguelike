@@ -83,7 +83,7 @@ def new_game() -> Engine:
     test_heads.append(copy.deepcopy(entity_factories.earing))
     test_heads.append(copy.deepcopy(entity_factories.hunting_cap))
     test_heads.append(copy.deepcopy(entity_factories.black_sunglasses))
-    test_heads.append(copy.deepcopy(entity_factories.massage_board))
+    test_heads.append(copy.deepcopy(entity_factories.massage_board_item))
     for head in test_heads:
         head.parent = player.inventory
         player.inventory.items.append(head)

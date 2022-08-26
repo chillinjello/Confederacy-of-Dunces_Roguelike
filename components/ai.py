@@ -277,3 +277,21 @@ class ClaudeRobichauxAI(HostileEnemy):
             )
 
         return action
+
+class SlowHostileEnemy(HostileEnemy):
+
+    def __init__(self, entity: Actor):
+        super().__init__(entity)
+        self.move_turn = True
+
+    def perform(self) -> None:
+        action = super().perform()
+        if self.current_target != None:
+            if action is MovementAction and self.move_turn:
+               self.move_turn = not self.move_turn 
+               return action
+            else:
+                pass
+        else:
+            self.move_turn = True
+            return action

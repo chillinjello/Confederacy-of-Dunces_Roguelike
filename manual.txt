@@ -57,8 +57,9 @@ Areas:
             - P: 4
         - Mrs. Levy
             - Summons massage board that must be killed before her
+            - Moves slow
             - HP: 5
-            - P: 5
+            - P: 1
                 - Massage Board: 
                     - HP: 20
                     - P: 0
