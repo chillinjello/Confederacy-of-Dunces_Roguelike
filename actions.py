@@ -1,4 +1,5 @@
 from __future__ import annotations
+import pdb
 
 from typing import Optional, Tuple, TYPE_CHECKING
 
@@ -149,6 +150,14 @@ class MeleeAction(ActionWithDirection):
         if rnd < self.entity.fighter.miss_chance:
             self.engine.message_log.add_message(
                 f"{self.entity.name.capitalize()} tried to attack {target.name}, but missed.",
+                attack_color
+            )
+            return
+        # Check dodge
+        rnd = random.uniform(0,1)
+        if rnd < target.fighter.dodge_chance:
+            self.engine.message_log.add_message(
+                f"{target.name.capitalize()} dodged {self.entity.name}'s attack.",
                 attack_color
             )
             return

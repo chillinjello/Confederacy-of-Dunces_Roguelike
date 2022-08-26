@@ -8,6 +8,8 @@ import random
 import numpy as np
 
 import color
+from components.ai import HostileEnemy
+from components.buff import Buff
 import entity_factories
 from components.base_component import BaseComponent
 from game_map import GameMap
@@ -27,24 +29,36 @@ class Fighter(BaseComponent):
         base_power: int, 
         base_valve: int = 100,
         *,
+        is_player: bool = False,
+
+        base_miss_chance: int = 0,
+        base_dodge_chance: float = 0,
+
+        valve_enabled: bool = False,
         starting_valve: int = 50,
         valve_increase_on_kill: int = 2,
-        is_player: bool = False,
         base_valve_resistance: float = 1.0,
     ):
         self.base_max_hp = hp
         self._hp = hp
+        
         self.base_defense = base_defense
         self.base_power = base_power
+        self.base_miss_chance = base_miss_chance
+        self.base_dodge_chance = base_dodge_chance
+
         self._valve = starting_valve
         self.max_valve = base_valve
         self.base_valve_resistance = base_valve_resistance
         self.valve_increase_on_kill = valve_increase_on_kill
+
         self.is_player = is_player
         # We want to track that enemies just hit by player don't attack 
         self.just_hit = False
+        self.valve_enabled = valve_enabled
 
-
+    def initialize_after_parent(self) -> None:
+        pass
 
     def reset_just_hit(self) -> None:
         self.just_hit = False
@@ -185,7 +199,21 @@ class Fighter(BaseComponent):
             multiplication *= self.parent.buff_container.miss_chance_multiplication
             addition += self.parent.buff_container.miss_chance_addition
 
-        base = (self.valve_miss_chance + addition) * multiplication
+        base_miss_chance = self.base_miss_chance
+        if self.valve_enabled:
+            base_miss_chance += self.valve_miss_chance
+        base = (base_miss_chance + addition) * multiplication
+        return max(0, min(base, 1))
+
+    @property
+    def dodge_chance(self) -> float:
+        addition, multiplication = 0, 1
+
+        if self.parent.buff_container:
+            multiplication *= self.parent.buff_container.dodge_chance_multiplier
+            addition += self.parent.buff_container.dodge_chance_addition
+
+        base = (self.base_dodge_chance + addition) * multiplication
         return max(0, min(base, 1))
 
     def tick(self) -> None:
@@ -199,6 +227,7 @@ class Fighter(BaseComponent):
         else:
             death_message = f"{self.parent.name} is dead!"
             death_message_color = color.enemy_die
+            self.parent.inventory.drop_all()
 
         self.parent.char = "%"
         self.parent.color = (191, 0, 0)
@@ -423,3 +452,27 @@ class MrsLevyFighter(Fighter):
             return super().take_damage(amount, counts_as_hit, attacker)
 
         return None
+
+class LanaLeeFighter(Fighter):
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        super().take_damage(amount, counts_as_hit, attacker)
+        # Isn't stunned!
+        self.just_hit = False
+
+class CockatooFighter(Fighter):
+    def __init__(self, hp: int, base_defense: int, base_power: int, base_valve: int = 100, *, starting_valve: int = 50, dodge_chance_addition: float = 0.1):
+        super().__init__(hp, base_defense, base_power, base_valve, starting_valve=starting_valve, base_miss_chance=1, base_dodge_chance=dodge_chance_addition)
+        self.taken_damage = False
+
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        if not self.taken_damage:
+            self.parent.ai = HostileEnemy(self.parent)
+            self.taken_damage = True
+            self.base_miss_chance = 0
+        return super().take_damage(amount, counts_as_hit, attacker)
+
+class BusFighter(Fighter):
+    def take_damage(self, amount: int, counts_as_hit: bool = True, attacker: Actor = None) -> None:
+        super().take_damage(amount, counts_as_hit, attacker)
+        # Isn't stunned!
+        self.just_hit = False

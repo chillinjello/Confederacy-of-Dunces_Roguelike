@@ -21,6 +21,9 @@ class BaseAI(Action):
         self.view_radius = view_radius
         self.current_target: Actor = None
 
+    def get_perform_action(self) -> Action:
+        return WaitAction(self.entity)
+
     def perform(self) -> None:
         raise NotImplementedError()
 
@@ -81,8 +84,8 @@ class HostileEnemy(BaseAI):
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
-
-    def perform(self) -> None:
+    
+    def get_perform_action(self):
         # Check to make sure the entity isn't already dead
         if not self.entity.is_alive:
             self.entity.ai = None
@@ -94,7 +97,7 @@ class HostileEnemy(BaseAI):
             self.current_target = self.find_target_within_distance(potential_targets=self.entity.game_map.friendly_actors)
 
         if self.current_target == None:
-            return WaitAction(self.entity).perform()
+            return WaitAction(self.entity)
         
         target = self.current_target
         dx = target.x - self.entity.x
@@ -107,7 +110,7 @@ class HostileEnemy(BaseAI):
             or self.engine.game_map.visible[self.engine.player.x, self.engine.player.y]
         ):
             if distance <= 1:
-                return MeleeAction(self.entity, dx, dy).perform()
+                return MeleeAction(self.entity, dx, dy)
 
             self.path = self.get_path_to(target.x, target.y)
 
@@ -115,20 +118,24 @@ class HostileEnemy(BaseAI):
             dest_x, dest_y = self.path.pop(0)
             return MovementAction(
                 self.entity, dest_x - self.entity.x, dest_y - self.entity.y,
-            ).perform()
+            )
         
-        return WaitAction(self.entity).perform()
+        return WaitAction(self.entity)
+
+    def perform(self) -> None:
+        action = self.get_perform_action()
+        if action != None:
+            action.perform()
 
 class AllyEnemy(BaseAI):
-    def __init__(self, entity: Actor, search_distance: int = 40):
+    def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
-        self.search_distance = search_distance
         entity.hostile = Actor.FRIENDLY_ACTOR
 
         self.entity.name = "Friendly " + self.entity.name
 
-    def perform(self) -> None:
+    def get_perform_action(self) -> Action: 
         # Check to make sure the entity isn't already dead
         if not self.entity.is_alive:
             self.entity.ai = None
@@ -140,7 +147,7 @@ class AllyEnemy(BaseAI):
             self.current_target = self.find_target_within_distance(potential_targets=self.entity.game_map.hostile_actors)
 
         if self.current_target == None:
-            return WaitAction(self.entity).perform()
+            return WaitAction(self.entity)
         
         target = self.current_target
         dx = target.x - self.entity.x
@@ -153,7 +160,7 @@ class AllyEnemy(BaseAI):
             or self.engine.game_map.visible[self.engine.player.x, self.engine.player.y]
         ):
             if distance <= 1:
-                return MeleeAction(self.entity, dx, dy).perform()
+                return MeleeAction(self.entity, dx, dy)
 
             self.path = self.get_path_to(target.x, target.y)
 
@@ -161,9 +168,15 @@ class AllyEnemy(BaseAI):
             dest_x, dest_y = self.path.pop(0)
             return MovementAction(
                 self.entity, dest_x - self.entity.x, dest_y - self.entity.y,
-            ).perform()
+            )
         
-        return WaitAction(self.entity).perform()
+        return WaitAction(self.entity)
+
+    def perform(self) -> None:
+        action = self.get_perform_action()
+        if action != None:
+            action.perform()
+
 
 class InanimateObject(BaseAI):
     def perform(self) -> None:
@@ -199,7 +212,7 @@ class FrozenEnemy(BaseAI):
         else:
             # do nothing
             self.turns_remaining -= 1
-            pass
+            WaitAction(self.entity).perform()
 
 class ConfusedEnemy(BaseAI):
     """
@@ -208,7 +221,7 @@ class ConfusedEnemy(BaseAI):
     """
 
     def __init__(
-        self, entity: Actor, previous_ai: Optional[BaseAI], turns_remaining: int
+        self, entity: Actor, previous_ai: Optional[BaseAI] = None, turns_remaining: int = -1
     ):
         super().__init__(entity)
 
@@ -221,7 +234,7 @@ class ConfusedEnemy(BaseAI):
             self.entity.ai = None
             return
         # Revert the AI back to the original state if the effect has run its course.
-        if self.turns_remaining <= 0:
+        if self.turns_remaining == 0:
             self.engine.message_log.add_message(
                 f"The {self.entity.name} is no longer confused."
             )
@@ -258,7 +271,7 @@ class ClaudeRobichauxAI(HostileEnemy):
 
 
     def perform(self) -> None:
-        action = super().perform()
+        action = self.get_perform_action()
 
         player = self.entity.game_map.engine.player
         if self.current_target != None and self.current_target == player:
@@ -276,22 +289,163 @@ class ClaudeRobichauxAI(HostileEnemy):
                 f"Claude Robichaux yells at the Player, lowering their defense by {self.base_time_till_shout}."
             )
 
-        return action
+        return action.perform()
 
 class SlowHostileEnemy(HostileEnemy):
-
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.move_turn = True
 
     def perform(self) -> None:
-        action = super().perform()
+        action = self.get_perform_action()
         if self.current_target != None:
-            if action is MovementAction and self.move_turn:
-               self.move_turn = not self.move_turn 
-               return action
+            if type(action) is MovementAction and self.move_turn:
+                self.move_turn = not self.move_turn 
+                return action.perform()
+            elif type(action) is MeleeAction:
+                return action.perform()
             else:
-                pass
+                self.move_turn = not self.move_turn
+                return WaitAction(self.entity).perform()
         else:
             self.move_turn = True
-            return action
+            return action.perform()
+
+class MrLevyAI(HostileEnemy):
+    def __init__(self, entity: Actor, time_till_sue: int = 6, debuff_amount: int = 1, defense_debuff_time: int = 20):
+        super().__init__(entity)
+        self.debuff_amount = debuff_amount
+        self.base_time_till_sue = time_till_sue
+
+        self.current_time_till_sue = self.base_time_till_sue
+
+
+    def perform(self) -> None:
+        action = self.get_perform_action()
+
+        player = self.entity.game_map.engine.player
+        if self.current_target != None and self.current_target == player:
+            self.current_time_till_sue -= 1
+        if self.current_time_till_sue == 1:
+            self.engine.message_log.add_message(
+                f"Mr. Levy is feeling legalistic!"
+            )
+        elif self.current_time_till_sue == 0:
+            self.current_time_till_sue = self.base_time_till_sue
+            item_stolen = None
+            if player.equipment.body_armor != None:
+                item_stolen = player.equipment.body_armor
+                player.equipment.toggle_equip(item_stolen, add_message=False)
+            elif player.equipment.weapon != None:
+                item_stolen = player.equipment.weapon
+                player.equipment.toggle_equip(item_stolen, add_message=False)
+            elif player.equipment.misc_equipment != None:
+                item_stolen = player.equipment.misc_equipment
+                player.equipment.toggle_equip(item_stolen, add_message=False)
+            elif player.equipment.head_armor != None:
+                item_stolen = player.equipment.head_armor
+                player.equipment.toggle_equip(item_stolen, add_message=False)
+            elif player.inventory and len(player.inventory.items) > 0:
+                item_stolen = player.inventory.items[0]
+            else:
+                self.engine.message_log.add_message(
+                    f"Mr. Levy tried to sue you, but could find anything to steal!"
+                )
+
+            self.engine.message_log.add_message(
+                f"Mr. Levy sues you, stealing your {item_stolen.name}!"
+            )
+            player.inventory.items.remove(item_stolen)
+            self.entity.inventory.items.append(item_stolen)
+        return action.perform()
+
+class RunningAwayEnemy(BaseAI):
+    def __init__(self, entity: Actor, *, view_radius: int = 8):
+        super().__init__(entity, view_radius=view_radius)
+
+    def get_perform_action(self) -> Action:
+        # Check to make sure the entity isn't already dead
+        if not self.entity.is_alive:
+            self.entity.ai = None
+            return
+
+        self.update_fov()
+
+        if self.current_target == None or not self.current_target.is_alive:
+            self.current_target = self.find_target_within_distance(potential_targets=self.entity.game_map.friendly_actors)
+
+        if self.current_target == None:
+            return WaitAction(self.entity)
+        
+        def dist(x1, x2, y1, y2):
+            return np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+        new_coords = [
+            (self.entity.x, self.entity.y),
+            (self.entity.x, self.entity.y - 1),
+            (self.entity.x, self.entity.y + 1),
+            (self.entity.x - 1, self.entity.y),
+            (self.entity.x + 1, self.entity.y),
+            (self.entity.x - 1, self.entity.y + 1),
+            (self.entity.x - 1, self.entity.y - 1),
+            (self.entity.x + 1, self.entity.y + 1),
+            (self.entity.x + 1, self.entity.y - 1),
+        ]
+
+        def sort_coords(coord): 
+            clear_offset = 0 if self.engine.game_map.is_coord_clear_and_walkable(*coord) else -10000
+            target = self.current_target
+            return dist(target.x, coord[0], target.y, coord[1]) + clear_offset
+
+        new_coords.sort(
+            key=sort_coords,
+            reverse=True
+        )
+
+
+
+        found_coord = new_coords[0]
+        if found_coord != (self.entity.x,self.entity.y):
+            return MovementAction(self.entity, found_coord[0] - self.entity.x, found_coord[1] - self.entity.y)
+        
+        return WaitAction(self.entity)
+
+    def perform(self) -> None:
+        self.get_perform_action().perform()
+
+class ProfessorTalcAI(RunningAwayEnemy):
+    def __init__(self, 
+        entity: Actor, 
+        *, 
+        view_radius: int = 8,
+        bad_grade_time: int = 5,
+        bad_grade_damage: int = 1,
+        bad_grade_range: int = 2
+    ):
+        super().__init__(entity, view_radius=view_radius)
+        self.base_bad_grade_time = bad_grade_time
+        self.bad_grade_time = bad_grade_time
+        self.bad_grade_damage = bad_grade_damage
+        self.bad_grade_range = bad_grade_range
+
+    def perform(self) -> None:
+        action = self.get_perform_action()
+
+        player = self.entity.game_map.engine.player
+        player_distance = np.sqrt((player.x - self.entity.x)**2 - (player.y - self.entity.y)**2)
+        if self.current_target != None and self.current_target == player and player_distance <= self.bad_grade_range:
+            self.bad_grade_time -= 1
+        if self.bad_grade_time == 1:
+            self.engine.message_log.add_message(
+                f"Professor Talc wants you off his back! He's getting ready to give a bad grade!"
+            )
+        elif self.bad_grade_time == 0:
+            player.fighter.take_damage(self.bad_grade_damage)
+
+            self.bad_grade_time = self.base_bad_grade_time
+            self.engine.message_log.add_message(
+                f"Professor Talc gives you a bad grade, dealing {self.bad_grade_damage} damage!"
+            )
+
+        action.perform()
+   

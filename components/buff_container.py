@@ -83,3 +83,17 @@ class BuffContainer(BaseComponent):
         for buff in self.buff_list:
             total_valve_resistance_addition *= buff.valve_resistance_addition
         return total_valve_resistance_addition
+
+    @property
+    def dodge_chance_addition(self):
+        total_dodge_chance_addition = 0
+        for buff in self.buff_list:
+            total_dodge_chance_addition *= buff.dodge_chance_addition
+        return total_dodge_chance_addition
+
+    @property
+    def dodge_chance_multiplier(self):
+        total_dodge_chance_multiplier = 1
+        for buff in self.buff_list:
+            total_dodge_chance_multiplier *= buff.dodge_chance_multiplier
+        return total_dodge_chance_multiplier

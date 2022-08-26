@@ -17,6 +17,8 @@ class Buff(BaseComponent):
         miss_chance_multiplier: float = 1,
         valve_resistance_addition: float = 0,
         valve_resistance_multiplier: float = 1,
+        dodge_chance_addition: float = 1,
+        dodge_chance_multiplier: float = 1,
         max_heath_addition: int = 0,
         buff_time: int = -1,
         time_expired_message: str = "",
@@ -34,6 +36,9 @@ class Buff(BaseComponent):
 
         self.valve_resistance_addition = valve_resistance_addition
         self.valve_resistance_multiplier = valve_resistance_multiplier
+
+        self.dodge_chance_addition = dodge_chance_addition
+        self.dodge_chance_multiplier = dodge_chance_multiplier
 
         self.max_health_addition = max_heath_addition
 

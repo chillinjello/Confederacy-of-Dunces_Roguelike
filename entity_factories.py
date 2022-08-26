@@ -1,8 +1,8 @@
-from components.ai import ClaudeRobichauxAI, HostileEnemy, SlowHostileEnemy, InanimateObject
+from components.ai import ClaudeRobichauxAI, ConfusedEnemy, HostileEnemy, MrLevyAI, ProfessorTalcAI, SlowHostileEnemy, InanimateObject
 from components import consumable, equippable
 from components.buff_container import BuffContainer
 from components.equipment import Equipment
-from components.fighter import DorianGreenFighter, Fighter, GeorgeFighter, GonzolozFighter, MrsLevyFighter, NeighborAnnie
+from components.fighter import BusFighter, CockatooFighter, DorianGreenFighter, Fighter, GeorgeFighter, GonzolozFighter, MrsLevyFighter, NeighborAnnie, LanaLeeFighter
 from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
@@ -14,7 +14,7 @@ player = Actor(
     name="Player", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=10, base_defense=0, base_power=2, base_valve=100, is_player=True),
+    fighter=Fighter(hp=15, base_defense=0, base_power=2, base_valve=100, is_player=True, valve_enabled=True),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(level_up_base=200),
@@ -204,19 +204,19 @@ massage_board_entity = Actor(
     fighter=Fighter(hp=20, base_defense=0, base_power=0),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=150),
+    level=Level(xp_given=50),
     hostile=Actor.HOSTILE_ACTOR,
 )
 mr_levy = Actor(
     char="R", 
     color=(0, 127, 0), 
     name="Mr. Riley", 
-    ai_cls=HostileEnemy,
+    ai_cls=MrLevyAI,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=0, base_power=5),
+    fighter=Fighter(hp=5, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
-    level=Level(xp_given=50),
+    level=Level(xp_given=150),
     hostile=Actor.HOSTILE_ACTOR,
 )
 
@@ -270,9 +270,9 @@ cockatoo = Actor(
     char="C", 
     color=(0, 127, 0), 
     name="Cockatoo", 
-    ai_cls=HostileEnemy,
+    ai_cls=ConfusedEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=10, base_defense=0, base_power=3),
+    fighter=CockatooFighter(hp=8, base_defense=0, base_power=2, dodge_chance_addition=0.25),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
@@ -284,7 +284,7 @@ lana_lee = Actor(
     name="Lana Lee", 
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=10, base_defense=0, base_power=3),
+    fighter=LanaLeeFighter(hp=8, base_defense=0, base_power=2),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
@@ -341,9 +341,9 @@ greyhound_bus = Actor(
     char="B",
     color=(0, 127, 0),
     name="Greyhound Bus",
-    ai_cls=HostileEnemy,
+    ai_cls=ConfusedEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=20, base_defense=0, base_power=3),
+    fighter=BusFighter(hp=20, base_defense=0, base_power=3),
     inventory=Inventory(capacity=26),
     buff_container=BuffContainer(),
     level=Level(xp_given=150),
@@ -353,7 +353,7 @@ professor_talc = Actor(
     char="P",
     color=(0, 127, 0),
     name="Professor Talc",
-    ai_cls=HostileEnemy,
+    ai_cls=ProfessorTalcAI,
     equipment=Equipment(),
     fighter=Fighter(hp=8, base_defense=0, base_power=0),
     inventory=Inventory(capacity=26),

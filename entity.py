@@ -151,6 +151,8 @@ class Actor(Entity):
 
         self.hostile = hostile
 
+        self.fighter.initialize_after_parent()
+
     def tick(self) -> None:
         # buffs are ticked first
         self.buff_container.tick()

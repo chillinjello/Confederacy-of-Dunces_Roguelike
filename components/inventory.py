@@ -22,3 +22,8 @@ class Inventory(BaseComponent):
         item.place(self.parent.x, self.parent.y, self.game_map)
 
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
+    
+    def drop_all(self) -> None:
+        for item in self.items:
+            item.place(self.parent.x, self.parent.y, self.game_map)
+        self.items.clear()

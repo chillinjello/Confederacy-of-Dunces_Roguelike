@@ -41,7 +41,7 @@ def render_valve_bar(
         valve_string = "Fully Closed"
         valve_background_color = color.valve_bar_0
     elif (valve_level == 1):
-        valve_string = "Partially Closed"
+        valve_string = "Kinda Closed"
         valve_background_color = color.valve_bar_1
     elif (valve_level == 2):
         valve_string = "Halfway Open"
