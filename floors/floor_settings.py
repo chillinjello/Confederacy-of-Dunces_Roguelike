@@ -13,10 +13,10 @@ NIGHT_OF_JOY_BAR = "NIGHT_OF_JOY_BAR"
 UNIVERSITY = "UNIVERSITY"
 floor_name_constants = [
     # FRENCH_QUARTER,
-    # IGNATIUS_HOUSE,
+    IGNATIUS_HOUSE,
     # LEVY_FACTORY,
     # NIGHT_OF_JOY_BAR,
-    UNIVERSITY,
+    # UNIVERSITY,
 ]
 
 floor_settings: Dict = {

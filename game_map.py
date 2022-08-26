@@ -20,7 +20,8 @@ class GameMap:
         self.engine = engine
         self.width, self.height = width, height
         self.entities = set(entities)
-        self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
+        self.floor_settings = engine.game_world.current_settings
+        self.tiles = np.full((width, height), fill_value=tile_types.wall(self.floor_settings["colors"]["walls"]), order="F")
 
         self.visible = np.full(
             (width, height), fill_value=False, order="F"
@@ -220,7 +221,7 @@ class GameWorld:
         room_min_size: int,
         room_max_size: int,
         ordered_settings: Iterator,
-        current_floor: int = 0,
+        current_floor: int = 1,
     ):
         self.engine = engine
 
@@ -233,17 +234,20 @@ class GameWorld:
         self.room_max_size = room_max_size
 
         self.ordered_settings = ordered_settings
-
         self.current_floor = current_floor
 
-    def generate_floor(self) -> None:
+    @property
+    def current_settings(self):
+        return self.ordered_settings[(self.current_floor - 1) % len(self.ordered_settings)]
+
+    def generate_floor(self, first_floor: bool = True) -> None:
         from procgen import generate_dungeon
 
-        self.current_floor += 1
+        if not first_floor:
+            self.current_floor += 1
 
-        current_settings = self.ordered_settings[(self.current_floor - 1) % len(self.ordered_settings)]
         self.engine.game_map = generate_dungeon(
-            floor_settings=current_settings,
+            floor_settings=self.current_settings,
             max_rooms=self.max_rooms,
             room_min_size=self.room_min_size,
             room_max_size=self.room_max_size,

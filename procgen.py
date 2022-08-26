@@ -1,7 +1,10 @@
 from __future__ import annotations
+import pdb
 
 import random
 from typing import Dict, Iterator, List, Tuple, TYPE_CHECKING
+from numpy import int8
+import numpy as np
 
 import tcod
 
@@ -154,6 +157,27 @@ def generate_dungeon(
     player = engine.player
     dungeon = GameMap(engine, map_width, map_height, entities=[player])
 
+    def get_floor_color(x=0, y=0) -> Tuple[int8, int8, int8]:
+        colors = floor_settings["colors"]
+        if colors == None or colors["floor_primary"] == None:
+            return (0xFF, 0xFF, 0xFF)
+        elif colors["floor_secondary"] == None or len(colors["floor_secondary"]) <= 0:
+            return colors["floor_primary"]
+        color_index_based_on_pos = (x + y) % (1 + len(colors["floor_secondary"]))
+        if color_index_based_on_pos == 0:
+            return colors["floor_primary"]
+        else:
+            return colors["floor_secondary"][color_index_based_on_pos - 1]
+
+    def get_floor_from_slice(slices: Tuple[slice, slice]) -> List[Tuple[int, int, int]]:
+        floors = []
+        x_slice, y_slice = slices[0], slices[1]
+        for i, x in enumerate(range(x_slice.start, x_slice.stop)):
+            floors.append([])
+            for y in range(y_slice.start, y_slice.stop):
+                floors[i].append(tile_types.floor(get_floor_color(x, y)))
+        return floors
+
     engine.message_log.add_message(f"You've entered { floor_settings['floor_name'] }")
     enemy_chances = floor_settings["enemy_chances"]
     item_chances = floor_settings["item_chances"]
@@ -178,7 +202,9 @@ def generate_dungeon(
         # If there are no intersections then the room is valid.
 
         # Dig out this rooms inner area.
-        dungeon.tiles[new_room.inner] = tile_types.floor
+        dungeon.tiles[new_room.inner] = get_floor_from_slice(new_room.inner)
+        # for iy, ix in np.ndindex(new_room.inner):
+        #     dungeon.tiles[iy, ix] = tile_types.floor(get_floor_color(ix, iy))
 
         if len(rooms) == 0:
             # The first room, where the player stars.
@@ -186,13 +212,13 @@ def generate_dungeon(
         else: # All rooms after the first
             # Dig out a tunnel betwewen this room and the previous one.
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
-                dungeon.tiles[x,y] = tile_types.floor
+                dungeon.tiles[x,y] = tile_types.floor(floor_settings["colors"]["floor_primary"])
 
             center_of_last_room = new_room.center
 
         place_entities(new_room, dungeon, floor_number, enemy_chances, item_chances)
 
-        dungeon.tiles[center_of_last_room] = tile_types.down_stairs
+        dungeon.tiles[center_of_last_room] = tile_types.down_stairs((200,200,200))
         dungeon.downstairs_location = center_of_last_room
 
         # Finally, append the new room to the list.

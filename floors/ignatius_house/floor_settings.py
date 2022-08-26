@@ -3,11 +3,12 @@ import sys
 sys.path.append("../../")
 
 from typing import Dict, List, Tuple, TYPE_CHECKING
-import entity_factories
 
+import entity_factories
+import color
 from entity import Entity
 
-colors = {}
+colors = color.ignatius_house_colors
 item_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factories.the_consolation_of_philosophy, 100), (entity_factories.dr_nut, 50), (entity_factories.jelly_donut, 50)]
 }

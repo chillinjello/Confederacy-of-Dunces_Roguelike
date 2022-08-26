@@ -1,3 +1,23 @@
+"""
+Level Colors!
+"""
+# French Quarter
+
+# Ignatius' House
+ignatius_house_colors = {
+    "walls": (225, 210, 134), # fifties_yellow
+    "floor_primary": (138, 198, 189), # fifties_turquoise
+    "floor_secondary": [
+        (218, 181, 180) # fifties_pink 
+    ],
+}
+# Levy Factory
+
+# Night of Joy Bar
+
+# University
+
+
 white = (0xFF, 0xFF, 0xFF)
 black = (0x0, 0x0, 0x0)
 red = (0xFF, 0x0, 0x0)
