@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        // Nothin here rn
-    }
     stages {
         stage('Begin Build') {
             steps {
