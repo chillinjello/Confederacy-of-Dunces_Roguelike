@@ -4,10 +4,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '---- Begin Checkout ----'
+                sh 'ls -a'
+                checkout smc
+                sh 'ls -a'
             }
-            sh 'ls -a'
-            checkout smc
-            sh 'ls -a'
         }
     }
 }
