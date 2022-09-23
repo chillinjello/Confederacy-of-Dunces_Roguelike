@@ -1,5 +1,5 @@
 tcod>=11.15
 numpy>=1.18
-mypy>=1.0
-pylint>=1.0
-pyflakes>=1.0
+mypy
+pylint
+pyflakes
