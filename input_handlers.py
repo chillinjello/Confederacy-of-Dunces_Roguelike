@@ -182,7 +182,38 @@ class MainGameEventHandler(EventHandler):
 
         return action
 
+# class GameWon(EventHandler):
+#     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+#         action: Optional[Action] = None
 
+#         key = event.sym
+
+#         if key == tcod.event.K_ESCAPE or key == tcod.event.K_q:
+#             raise SystemExit()
+#         elif key == tcod.event.K_r:
+#             new_game() 
+#         elif key == tcod.event.K_m:
+#             return MainGameEventHandler(self.engine) 
+
+#         return action
+
+#     def on_render(self, console: tcod.Console) -> None:
+#         super().on_render(console)
+
+#         x = self.engine.game_map.width / 2
+#         y = self.engine.game_map.height / 2
+
+#         console.draw_frame(
+#             x=x,
+#             y=y,
+#             width=35,
+#             height=8,
+#             title=self.TITLE,
+#             clear=True,
+#             fg=(255, 255, 255),
+#             bg=(0, 0, 0),
+#         )
+    
 class GameOverEventHandler(EventHandler):
     def on_quit(self) -> None:
         """Handle exiting out of a finished game."""
@@ -196,6 +227,8 @@ class GameOverEventHandler(EventHandler):
     def ev_keydown(self,event: tcod.event.KeyDown) -> Optional[Action]:
         if event.sym == tcod.event.K_ESCAPE:
             self.on_quit()
+        elif event.sym == tcod.event.K_m:
+            return MainGameEventHandler(self.engine) 
 
 CURSOR_Y_KEYS = {
     tcod.event.K_UP: -1,

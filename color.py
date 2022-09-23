@@ -2,6 +2,13 @@
 Level Colors!
 """
 # French Quarter
+french_quarter_colors = {
+    "walls": (225, 210, 134), # fifties_yellow
+    "floor_primary": (138, 198, 189), # fifties_turquoise
+    "floor_secondary": [
+        (218, 181, 180) # fifties_pink 
+    ],
+}
 
 # Ignatius' House
 ignatius_house_colors = {
@@ -12,11 +19,31 @@ ignatius_house_colors = {
     ],
 }
 # Levy Factory
+levy_factory_colors = {
+    "walls": (225, 210, 134), # fifties_yellow
+    "floor_primary": (138, 198, 189), # fifties_turquoise
+    "floor_secondary": [
+        (218, 181, 180) # fifties_pink 
+    ],
+}
 
 # Night of Joy Bar
+night_of_joy_bar_colors = {
+    "walls": (225, 210, 134), # fifties_yellow
+    "floor_primary": (138, 198, 189), # fifties_turquoise
+    "floor_secondary": [
+        (218, 181, 180) # fifties_pink 
+    ],
+}
 
 # University
-
+university_colors = {
+    "walls": (225, 210, 134), # fifties_yellow
+    "floor_primary": (138, 198, 189), # fifties_turquoise
+    "floor_secondary": [
+        (218, 181, 180) # fifties_pink 
+    ],
+}
 
 white = (0xFF, 0xFF, 0xFF)
 black = (0x0, 0x0, 0x0)

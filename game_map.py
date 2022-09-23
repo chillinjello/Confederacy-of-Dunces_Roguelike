@@ -246,6 +246,11 @@ class GameWorld:
         if not first_floor:
             self.current_floor += 1
 
+        if self.current_floor == 2: #== len(self.ordered_settings) + 1:
+            # finish game
+             
+            return
+
         self.engine.game_map = generate_dungeon(
             floor_settings=self.current_settings,
             max_rooms=self.max_rooms,

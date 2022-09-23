@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '---- Begin Checkout ----'
+            }
+            checkout smc
+            sh 'ls -a'
+        }
+    }
+}
