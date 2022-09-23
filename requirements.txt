@@ -1,5 +1,4 @@
 tcod>=11.15
 numpy>=1.18
-mypy
 pylint
 pyflakes
