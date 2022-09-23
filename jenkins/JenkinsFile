@@ -11,7 +11,7 @@ pipeline {
         stage('Begin Tests') {
             steps {
                 echo '---- Begin Tests ----'
-                sh 'mypy *.py'
+                sh 'mypy main.py'
                 sh 'pylint main.py'
                 sh 'pyflakes main.py'
             }
