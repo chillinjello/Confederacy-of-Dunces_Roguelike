@@ -5,6 +5,7 @@ pipeline {
             steps {
                 echo '---- Begin Checkout ----'
             }
+            sh 'ls -a'
             checkout smc
             sh 'ls -a'
         }
